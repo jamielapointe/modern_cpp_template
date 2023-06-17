@@ -1,41 +1,7 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
 # Build directories and binary files
 build/
 out/
 cmake-build-*/
-conan-cache/
 
 # User spesific settings
 CMakeUserPresets.json
@@ -53,7 +19,7 @@ CMakeUserPresets.json
 _ReSharper*
 *.log
 
-# Windows nonsense
+# OS Generated Files
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -65,3 +31,4 @@ $RECYCLE.BIN/
 .TemporaryItems
 ehthumbs.db
 Thumbs.db
+Dockerfile

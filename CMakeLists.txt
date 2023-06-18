@@ -12,6 +12,8 @@ if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 20)
 endif()
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 # strongly encouraged to enable this globally to avoid conflicts between
 # -Wpedantic being enabled and -std=c++20 and -std=gnu++20 for example
 # when compiling with PCH enabled
@@ -25,13 +27,13 @@ project(
   HOMEPAGE_URL "%%myurl%%"
   LANGUAGES CXX C)
 
-include(cmake/PreventInSourceBuilds.cmake)
-include(ProjectOptions.cmake)
+include(PreventInSourceBuilds)
+include(ProjectOptions)
 
 myproject_setup_options()
 
 myproject_global_options()
-include(Dependencies.cmake)
+include(Dependencies)
 myproject_setup_dependencies()
 
 myproject_local_options()
@@ -71,14 +73,13 @@ endif()
 include(CTest)
 
 if(BUILD_TESTING)
-  message(AUTHOR_WARNING "Building Tests. Be sure to check out test/constexpr_tests.cpp for constexpr testing")
   add_subdirectory(test)
 endif()
 
 if(myproject_BUILD_FUZZ_TESTS)
-  message(AUTHOR_WARNING "Building Fuzz Tests, using fuzzing sanitizer https://www.llvm.org/docs/LibFuzzer.html")
-  if(NOT myproject_ENABLE_ADDRESS_SANITIZER AND NOT myproject_ENABLE_THREAD_SANITIZER)
-    message(WARNING "You need asan or tsan enabled for meaningful fuzz testing")
+  message(STATUS "Building Fuzz Tests, using fuzzing sanitizer https://www.llvm.org/docs/LibFuzzer.html")
+  if(NOT (myproject_ENABLE_SANITIZER_ADDRESS OR myproject_ENABLE_SANITIZER_UNDEFINED))
+    message(WARNING "You need asan or ubsan enabled for meaningful fuzz testing")
   endif()
   add_subdirectory(fuzz_test)
 
@@ -99,18 +100,18 @@ if(CMAKE_SKIP_INSTALL_RULES)
   return()
 endif()
 
-include(cmake/PackageProject.cmake)
+include(PackageProject)
 
 # Add other targets that you want installed here, by default we just package the one executable
 # we know we want to ship
-myproject_package_project(
-  TARGETS
-  intro
-  myproject_options
-  myproject_warnings
-  # FIXME: this does not work! CK
-  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-)
+# myproject_package_project(
+#   TARGETS
+#   intro
+#   myproject_options
+#   myproject_warnings
+#   # FIXME: this does not work! CK
+#   # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+# )
 
 # Experience shows that explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you

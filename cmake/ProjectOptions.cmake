@@ -78,10 +78,7 @@ macro(myproject_setup_options)
   endif()
 
   myproject_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
-  if(LIBFUZZER_SUPPORTED
-     AND (myproject_ENABLE_SANITIZER_ADDRESS
-          OR myproject_ENABLE_SANITIZER_THREAD
-          OR myproject_ENABLE_SANITIZER_UNDEFINED))
+  if(LIBFUZZER_SUPPORTED AND (myproject_ENABLE_SANITIZER_ADDRESS OR myproject_ENABLE_SANITIZER_UNDEFINED))
     set(DEFAULT_FUZZER ON)
   else()
     set(DEFAULT_FUZZER OFF)

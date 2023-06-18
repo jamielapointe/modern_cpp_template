@@ -32,13 +32,19 @@ function(myproject_setup_dependencies)
     cpmaddpackage("gh:lefticus/tools#update_build_system")
   endif()
 
-  if (NOT TARGET benchmark::benchmark)
-    CPMAddPackage(
-      NAME benchmark
-      GITHUB_REPOSITORY google/benchmark
-      VERSION 1.8.0
-      OPTIONS "BENCHMARK_ENABLE_TESTING Off"
-    )
+  if(NOT TARGET benchmark::benchmark)
+    cpmaddpackage(
+      NAME
+      benchmark
+      GITHUB_REPOSITORY
+      google/benchmark
+      VERSION
+      1.8.0
+      OPTIONS
+      "BENCHMARK_ENABLE_TESTING Off"
+      "CMAKE_BUILD_TYPE Release")
+
+    # add customizable options to include LIBPFM and LTO
 
     if(benchmark_ADDED)
       # enable c++11 to avoid compilation errors
@@ -46,16 +52,21 @@ function(myproject_setup_dependencies)
     endif()
   endif()
 
-  if (NOT TARGET googletest::googletest)
-    CPMAddPackage(
-      NAME googletest
-      GITHUB_REPOSITORY google/googletest
-      GIT_TAG release-1.13.0
-      VERSION 1.13.0
+  if(NOT TARGET googletest::googletest)
+    cpmaddpackage(
+      NAME
+      googletest
+      GITHUB_REPOSITORY
+      google/googletest
+      GIT_TAG
+      v1.13.0
+      VERSION
+      1.13.0
       OPTIONS
-          "INSTALL_GTEST OFF"
-          "gtest_force_shared_crt ON"
-    )
+      "INSTALL_GTEST OFF"
+      "gtest_force_shared_crt ON"
+      "CMAKE_BUILD_TYPE Release"
+      "CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF")
   endif()
 
 endfunction()

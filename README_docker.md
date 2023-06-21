@@ -1,4 +1,4 @@
-## Docker Instructions
+# Docker Instructions
 
 If you have [Docker](https://www.docker.com/) installed, you can run this
 in your terminal, when the Dockerfile is inside the `.devcontainer` directory:
@@ -38,8 +38,8 @@ TLDR:
 
 ```bash
 docker run -it \
-	-v absolute_path_on_host_machine:absolute_path_in_guest_container \
-	my_project:latest
+  -v absolute_path_on_host_machine:absolute_path_in_guest_container \
+  my_project:latest
 ```
 
 You can configure and build [as directed above](#build) using these commands:
@@ -68,4 +68,3 @@ run them separately.
 
 A script called `build_examples.sh` is provided to help you to build the example
 GUI projects in this container.
-

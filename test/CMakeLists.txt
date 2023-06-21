@@ -22,8 +22,13 @@ target_link_libraries(
   tests
   PRIVATE myproject::myproject_warnings
           myproject::myproject_options
-          myproject::sample_library
-          GTest::gtest_main)
+          myproject::sample_library)
+
+target_link_system_libraries(
+  tests
+  PRIVATE
+  GTest::gtest_main
+)
 
 include(GoogleTest)
 gtest_discover_tests(tests XML_OUTPUT_DIR ${CMAKE_BINARY_DIR})

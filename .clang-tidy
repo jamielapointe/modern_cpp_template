@@ -1,8 +1,7 @@
 ---
 Checks: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,cert-*"
-WarningsAsErrors: "cppcoreguidelines-*,cert-*"
+WarningsAsErrors: "*"
 HeaderFileExtensions:
-  - ""
   - h
   - hh
   - hpp

@@ -10,7 +10,8 @@ add_library(myproject::sample_library ALIAS sample_library)
 target_link_libraries(sample_library PRIVATE myproject_options myproject_warnings)
 
 target_include_directories(sample_library ${WARNING_GUARD} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                                                                  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>)
+                                                                  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+                                                                  $<INSTALL_INTERFACE:include>)
 
 target_compile_features(sample_library PUBLIC cxx_std_20)
 

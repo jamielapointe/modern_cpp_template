@@ -24,9 +24,9 @@ function(myproject_setup_dependencies)
       "SPDLOG_FMT_EXTERNAL ON")
   endif()
 
-  if(NOT TARGET CLI11::CLI11)
-    cpmaddpackage("gh:CLIUtils/CLI11@2.3.2")
-  endif()
+  # if(NOT TARGET CLI11::CLI11)
+  #   cpmaddpackage("gh:CLIUtils/CLI11@2.3.2")
+  # endif()
 
   if(NOT TARGET tools::tools)
     cpmaddpackage("gh:lefticus/tools#update_build_system")
@@ -34,39 +34,34 @@ function(myproject_setup_dependencies)
 
   if(NOT TARGET benchmark::benchmark)
     cpmaddpackage(
-      NAME
-      benchmark
-      GITHUB_REPOSITORY
-      google/benchmark
-      VERSION
-      1.8.0
-      OPTIONS
-      "BENCHMARK_ENABLE_TESTING Off"
-      "CMAKE_BUILD_TYPE Release")
+      NAME benchmark
+      GITHUB_REPOSITORY google/benchmark
+      VERSION 1.8.0
+      OPTIONS "BENCHMARK_ENABLE_TESTING Off"
+              "CMAKE_BUILD_TYPE Release")
 
     # add customizable options to include LIBPFM and LTO
 
     if(benchmark_ADDED)
-      # enable c++11 to avoid compilation errors
-      set_target_properties(benchmark PROPERTIES CXX_STANDARD 11)
+      set_target_properties(benchmark PROPERTIES CXX_STANDARD 14)
     endif()
   endif()
 
   if(NOT TARGET googletest::googletest)
     cpmaddpackage(
-      NAME
-      googletest
-      GITHUB_REPOSITORY
-      google/googletest
-      GIT_TAG
-      v1.13.0
-      VERSION
-      1.13.0
-      OPTIONS
-      "INSTALL_GTEST OFF"
-      "gtest_force_shared_crt ON"
-      "CMAKE_BUILD_TYPE Release"
-      "CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF")
+      NAME googletest
+      GITHUB_REPOSITORY google/googletest
+      GIT_TAG v1.13.0
+      VERSION 1.13.0
+      OPTIONS "INSTALL_GTEST OFF"
+              "gtest_force_shared_crt ON"
+              "CMAKE_BUILD_TYPE Release"
+              "CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF")
+  endif()
+  if (googletest_ADDED)
+    # disable annoying compiler warnings in GoogleTest
+    set_target_properties(gtest PROPERTIES COMPILE_FLAGS -Wno-implicit-int-float-conversion)
+    set_target_properties(gtest_main PROPERTIES COMPILE_FLAGS -Wno-implicit-int-float-conversion)
   endif()
 
 endfunction()

@@ -1,14 +1,15 @@
-#include <catch2/catch_test_macros.hpp>
+#include <gtest/gtest.h>
 
+#include "myproject/factorial.h"
 
-#include <myproject/sample_library.hpp>
+namespace {
 
-
-TEST_CASE("Factorials are computed", "[factorial]")
-{
-  REQUIRE(factorial(0) == 1);
-  REQUIRE(factorial(1) == 1);
-  REQUIRE(factorial(2) == 2);
-  REQUIRE(factorial(3) == 6);
-  REQUIRE(factorial(10) == 3628800);
+TEST(FactorialTest, Basic00) {
+  ASSERT_EQ(factorial(0), 1);
+  ASSERT_EQ(factorial(1), 1);
+  ASSERT_EQ(factorial(2), 2);
+  ASSERT_EQ(factorial(3), 6);
+  ASSERT_EQ(factorial(10), 3628800);
 }
+
+}  // namespace

@@ -1,4 +1,4 @@
-macro(myproject_enable_cppcheck WARNINGS_AS_ERRORS CPPCHECK_OPTIONS)
+macro(myproject_enable_cppcheck CPPCHECK_OPTIONS)
   find_program(CPPCHECK cppcheck)
   if(CPPCHECK)
 
@@ -38,15 +38,13 @@ macro(myproject_enable_cppcheck WARNINGS_AS_ERRORS CPPCHECK_OPTIONS)
        "")
       set(CMAKE_CXX_CPPCHECK ${CMAKE_CXX_CPPCHECK} --std=c++${CMAKE_CXX_STANDARD})
     endif()
-    if(${WARNINGS_AS_ERRORS})
-      list(APPEND CMAKE_CXX_CPPCHECK --error-exitcode=2)
-    endif()
+    list(APPEND CMAKE_CXX_CPPCHECK --error-exitcode=2)
   else()
     message(${WARNING_MESSAGE} "cppcheck requested but executable not found")
   endif()
 endmacro()
 
-macro(myproject_enable_clang_tidy target WARNINGS_AS_ERRORS)
+macro(myproject_enable_clang_tidy target)
 
   find_program(CLANGTIDY clang-tidy)
   if(CLANGTIDY)
@@ -85,11 +83,6 @@ macro(myproject_enable_clang_tidy target WARNINGS_AS_ERRORS)
       else()
         set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=-std=c++${CMAKE_CXX_STANDARD})
       endif()
-    endif()
-
-    # set warnings as errors
-    if(${WARNINGS_AS_ERRORS})
-      list(APPEND CLANG_TIDY_OPTIONS -warnings-as-errors=*)
     endif()
 
     message("Also setting clang-tidy globally")

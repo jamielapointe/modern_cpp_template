@@ -13,7 +13,12 @@ This is a really long list of dependencies, and it's easy to mess up. That's why
 ### Docker
 
 We have a Docker image that's already set up for you. See the
+
+<!-- markdownlint-disable MD051 -->
+
 [Docker instructions](#docker-instructions).
+
+<!-- markdownlint-enable -->
 
 ## Setup-cpp
 
@@ -37,21 +42,18 @@ RefreshEnv.cmd # reload the environment
 
 ### Necessary Dependencies
 
-1. A C++ compiler that supports C++17.
+1. A C++ compiler that supports nearly all of C++17 and most of C++20.
    See [cppreference.com](https://en.cppreference.com/w/cpp/compiler_support)
    to see which features are supported by each compiler.
    The following compilers should work:
 
-   - [gcc 7+](https://gcc.gnu.org/)
-     <details>
-     <summary>Install command</summary>
+   - [gcc 12+](https://gcc.gnu.org/)
+     Install command
 
      - Debian/Ubuntu:
 
        ```bash
        sudo apt install build-essential
-       ``
-
        ```
 
      - Windows:
@@ -66,11 +68,8 @@ RefreshEnv.cmd # reload the environment
        brew install gcc
        ```
 
-       </details>
-
-   - [clang 6+](https://clang.llvm.org/)
-     <details>
-     <summary>Install command</summary>
+   - [clang 15+](https://clang.llvm.org/)
+     Install command
 
      - Debian/Ubuntu:
 
@@ -92,7 +91,7 @@ RefreshEnv.cmd # reload the environment
        ```bash
        git clone https://github.com/zufuliu/llvm-utils.git
        cd llvm-utils/VS2017
-       .\install.bat
+       install.bat
        ```
 
      - MacOS:
@@ -101,11 +100,8 @@ RefreshEnv.cmd # reload the environment
        brew install llvm
        ```
 
-       </details>
-
    - [Visual Studio 2019 or higher](https://visualstudio.microsoft.com/)
-     <details>
-     <summary>Install command + Environment setup</summary>
+     Install command + Environment setup
 
      On Windows, you need to install Visual Studio 2019 because of the SDK and
      libraries that ship with it.
@@ -134,11 +130,8 @@ RefreshEnv.cmd # reload the environment
      refreshenv
      ```
 
-     </details>
-
-2. [CMake 3.21+](https://cmake.org/)
-   <details>
-   <summary>Install Command</summary>
+2. [CMake 3.25+](https://cmake.org/)
+   Install Command
 
    - Debian/Ubuntu:
 
@@ -158,15 +151,12 @@ RefreshEnv.cmd # reload the environment
      brew install cmake
      ```
 
-   </details>
-
 ### Optional Dependencies
 
 #### C++ Tools
 
 - [Doxygen](http://doxygen.nl/)
-  <details>
-  <summary>Install Command</summary>
+  Install Command
 
   - Debian/Ubuntu:
 
@@ -189,11 +179,8 @@ RefreshEnv.cmd # reload the environment
     brew install graphviz
     ```
 
-  </details>
-
-- [ccache](https://ccache.dev/)
-  <details>
-  <summary>Install Command</summary>
+- [ccache][def]
+  Install Command
 
   - Debian/Ubuntu:
 
@@ -213,11 +200,8 @@ RefreshEnv.cmd # reload the environment
     brew install ccache
     ```
 
-  </details>
-
 - [Cppcheck](http://cppcheck.sourceforge.net/)
-  <details>
-  <summary>Install Command</summary>
+  Install Command
 
   - Debian/Ubuntu:
 
@@ -237,12 +221,10 @@ RefreshEnv.cmd # reload the environment
     brew install cppcheck
     ```
 
-  </details>
-
 - [include-what-you-use](https://include-what-you-use.org/)
-  <details>
-  <summary>Install Command</summary>
+  Install Command
 
   Follow instructions here:
   [install: include what you use](https://github.com/include-what-you-use/include-what-you-use#how-to-install)
-  </details>
+
+[def]: https://ccache.dev/

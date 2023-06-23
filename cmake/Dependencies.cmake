@@ -9,24 +9,24 @@ function(myproject_setup_dependencies)
   # already been provided to us by a parent project
 
   if(NOT TARGET fmtlib::fmtlib)
-    cpmaddpackage("gh:fmtlib/fmt#9.1.0")
+    cpmaddpackage("gh:fmtlib/fmt#10.0.0")
   endif()
 
-  if(NOT TARGET spdlog::spdlog)
+  if(NOT TARGET quill::quill)
     cpmaddpackage(
       NAME
-      spdlog
+      quill
       VERSION
-      1.11.0
+      3.0.2
       GITHUB_REPOSITORY
-      "gabime/spdlog"
+      "odygrd/quill"
       OPTIONS
-      "SPDLOG_FMT_EXTERNAL ON")
+      "QUILL_FMT_EXTERNAL ON")
   endif()
 
-  # if(NOT TARGET CLI11::CLI11)
-  #   cpmaddpackage("gh:CLIUtils/CLI11@2.3.2")
-  # endif()
+  if(NOT TARGET CLI11::CLI11)
+    cpmaddpackage("gh:CLIUtils/CLI11@2.3.2")
+  endif()
 
   if(NOT TARGET tools::tools)
     cpmaddpackage("gh:lefticus/tools#update_build_system")

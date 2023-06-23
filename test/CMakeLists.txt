@@ -17,7 +17,7 @@ endif()
 
 # ---- Dependencies ----
 
-add_executable(tests tests.cpp)
+add_executable(tests test_main.cpp factorial_test.cpp fibonacci_test.cpp)
 target_link_libraries(
   tests
   PRIVATE myproject::myproject_warnings

@@ -2,7 +2,7 @@
 #
 # https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md
 
-function(myproject_set_project_warnings project_name WARNINGS_AS_ERRORS)
+function(myproject_set_project_warnings project_name)
   set(MSVC_WARNINGS
       /W4 # Baseline reasonable warnings
       /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
@@ -27,7 +27,7 @@ function(myproject_set_project_warnings project_name WARNINGS_AS_ERRORS)
       /w14906 # string literal cast to 'LPWSTR'
       /w14928 # illegal copy-initialization; more than one user-defined conversion has been implicitly applied
       /permissive- # standards conformance mode for MSVC compiler.
-  )
+      /WX)
 
   # Clang + GCC shared warnings
   set(CLANG_GCC_WARNINGS
@@ -47,6 +47,8 @@ function(myproject_set_project_warnings project_name WARNINGS_AS_ERRORS)
       -Wformat=2 # warn on security issues around functions that format output (ie printf)
       -Wimplicit-fallthrough # warn on statements that fallthrough without an explicit annotation
       -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
+      -Werror # Turn warnings into errros
+      -Wfatal-errors # stop on the first error
   )
 
   # Clang only warnings
@@ -54,6 +56,7 @@ function(myproject_set_project_warnings project_name WARNINGS_AS_ERRORS)
       ${CLANG_GCC_WARNINGS}
       -Wshadow-all # warn the user if a variable declaration shadows one from a parent context - anywhere
       -Wlogical-op-parentheses # warn if '&&' within '||' without parenthesis
+      -Wno-c++17-extensions # All C++17 only syntax
   )
 
   set(GCC_WARNINGS
@@ -73,13 +76,6 @@ function(myproject_set_project_warnings project_name WARNINGS_AS_ERRORS)
       -Wshadow
       # TODO add more Cuda warnings
   )
-
-  if(WARNINGS_AS_ERRORS)
-    message(TRACE "Warnings are treated as errors")
-    list(APPEND CLANG_WARNINGS -Werror)
-    list(APPEND GCC_WARNINGS -Werror)
-    list(APPEND MSVC_WARNINGS /WX)
-  endif()
 
   if(MSVC)
     set(PROJECT_WARNINGS_CXX ${MSVC_WARNINGS})

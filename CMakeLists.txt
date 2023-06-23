@@ -8,9 +8,7 @@ cmake_minimum_required(VERSION 3.25)
 # manual dependency management
 
 # Only set the cxx_standard if it is not set by someone else
-if(NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 20)
-endif()
+set(CMAKE_CXX_STANDARD 20)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -18,6 +16,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # -Wpedantic being enabled and -std=c++20 and -std=gnu++20 for example
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Require C++20
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set the project name and language
 project(

@@ -32,7 +32,6 @@ macro(myproject_setup_options)
   if(NOT PROJECT_IS_TOP_LEVEL OR myproject_PACKAGING_MAINTAINER_MODE)
     option(myproject_BUILD_DOCUMENTATION "Generate Doxygen documentation" OFF)
     option(myproject_ENABLE_IPO "Enable IPO/LTO" OFF)
-    option(myproject_WARNINGS_AS_ERRORS "Treat Warnings As Errors" OFF)
     option(myproject_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
     option(myproject_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
     option(myproject_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
@@ -47,7 +46,6 @@ macro(myproject_setup_options)
   else()
     option(myproject_BUILD_DOCUMENTATION "Generate Doxygen documentation" ON)
     option(myproject_ENABLE_IPO "Enable IPO/LTO" ON)
-    option(myproject_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
     option(myproject_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
     option(myproject_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${SUPPORTS_ASAN})
     option(myproject_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ${SUPPORTS_ASAN})
@@ -64,7 +62,6 @@ macro(myproject_setup_options)
   if(NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
       myproject_ENABLE_IPO
-      myproject_WARNINGS_AS_ERRORS
       myproject_ENABLE_USER_LINKER
       myproject_ENABLE_SANITIZER_ADDRESS
       myproject_ENABLE_SANITIZER_LEAK
@@ -123,7 +120,7 @@ macro(myproject_local_options)
   add_library(myproject_options INTERFACE)
 
   include(cmake/CompilerWarnings.cmake)
-  myproject_set_project_warnings(myproject_warnings ${myproject_WARNINGS_AS_ERRORS})
+  myproject_set_project_warnings(myproject_warnings)
 
   if(myproject_ENABLE_USER_LINKER)
     include(cmake/Linker.cmake)
@@ -157,11 +154,11 @@ macro(myproject_local_options)
 
   include(cmake/StaticAnalyzers.cmake)
   if(myproject_ENABLE_CLANG_TIDY)
-    myproject_enable_clang_tidy(myproject_options ${myproject_WARNINGS_AS_ERRORS})
+    myproject_enable_clang_tidy(myproject_options)
   endif()
 
   if(myproject_ENABLE_CPPCHECK)
-    myproject_enable_cppcheck(${myproject_WARNINGS_AS_ERRORS} "" # override cppcheck options
+    myproject_enable_cppcheck("" # override cppcheck options
     )
   endif()
 
@@ -175,12 +172,10 @@ macro(myproject_local_options)
     myproject_enable_doxygen("")
   endif()
 
-  if(myproject_WARNINGS_AS_ERRORS)
-    check_cxx_compiler_flag("-Wl,--fatal-warnings" LINKER_FATAL_WARNINGS)
-    if(LINKER_FATAL_WARNINGS)
-      # This is not working consistently, so disabling for now
-      # target_link_options(myproject_options INTERFACE -Wl,--fatal-warnings)
-    endif()
+  check_cxx_compiler_flag("-Wl,--fatal-warnings" LINKER_FATAL_WARNINGS)
+  if(LINKER_FATAL_WARNINGS)
+    # This is not working consistently, so disabling for now
+    # target_link_options(myproject_options INTERFACE -Wl,--fatal-warnings)
   endif()
 
   if(myproject_ENABLE_HARDENING AND NOT myproject_ENABLE_GLOBAL_HARDENING)

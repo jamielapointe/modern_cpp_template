@@ -52,6 +52,7 @@ CMakeUserPresets.json
 *~
 _ReSharper*
 *.log
+.cache/
 
 # Windows nonsense
 .DS_Store

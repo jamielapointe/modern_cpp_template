@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
+#include <myproject/factorial.h>
 
-#include "myproject/factorial.h"
-
-namespace {
+using myproject::algorithms::factorial;
 
 TEST(FactorialTest, Basic00) {
   ASSERT_EQ(factorial(0), 1);
@@ -11,5 +10,3 @@ TEST(FactorialTest, Basic00) {
   ASSERT_EQ(factorial(3), 6);
   ASSERT_EQ(factorial(10), 3628800);
 }
-
-}  // namespace

@@ -3,8 +3,6 @@ include(GenerateExportHeader)
 
 add_library(sample_library sample_library.cpp)
 
-
-
 add_library(myproject::sample_library ALIAS sample_library)
 
 target_link_libraries(sample_library PRIVATE myproject_options myproject_warnings)

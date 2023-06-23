@@ -1,12 +1,16 @@
-#ifndef SAMPLE_LIBRARY_HPP
-#define SAMPLE_LIBRARY_HPP
+#pragma once
 
-[[nodiscard]] constexpr int factorial(int input) noexcept {
-  if (input == 0) {
-    return 1;
+#include <cstdint>
+
+namespace myproject::algorithms {
+
+[[nodiscard]] constexpr int64_t factorial(int64_t number) noexcept {
+  int64_t result{1};
+  while (number > 0) {
+    result *= number;
+    --number;
   }
-
-  return input * factorial(input - 1);
+  return result;
 }
 
-#endif
+}  // namespace myproject::algorithms

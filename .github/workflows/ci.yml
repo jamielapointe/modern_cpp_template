@@ -4,15 +4,13 @@ on:
   release:
     types: [published]
   push:
-    tags:
     branches:
       - main
       - develop
 
 env:
-  CLANG_TIDY_VERSION: "15.0.2"
+  CLANG_TIDY_VERSION: "15.0.7"
   VERBOSE: 1
-
 
 jobs:
   Test:
@@ -33,9 +31,8 @@ jobs:
           - macos-10.15
           - windows-2019
         compiler:
-          # you can specify the version after `-` like "llvm-15.0.2".
-          - llvm-15.0.2
-          - gcc-11
+          - llvm-15.0.7
+          - gcc-12.1.1
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -55,11 +52,11 @@ jobs:
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - compiler: gcc-11
+          - compiler: gcc-12.1.1
             gcov_executable: gcov
             enable_ipo: On
 
-          - compiler: llvm-15.0.2
+          - compiler: llvm-15.0.7
             enable_ipo: Off
             gcov_executable: "llvm-cov gcov"
 
@@ -73,7 +70,7 @@ jobs:
 
           # This exists solely to make sure a non-multiconfig build works
           - os: ubuntu-20.04
-            compiler: gcc-11
+            compiler: gcc-12.1.1
             generator: "Unix Makefiles"
             build_type: Debug
             gcov_executable: gcov
@@ -116,7 +113,6 @@ jobs:
             enable_ipo: On
             build_shared: On
 
-
     steps:
       - name: Check for llvm version mismatches
         if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
@@ -138,8 +134,7 @@ jobs:
       - name: Project Name
         uses: cardinalby/export-env-action@v2
         with:
-          envFile: '.github/constants.env'
-
+          envFile: ".github/constants.env"
 
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
@@ -152,7 +147,6 @@ jobs:
           vcpkg: false
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-
 
           cppcheck: true
 
@@ -195,7 +189,6 @@ jobs:
         with:
           files: |
             build/*-*${{ matrix.build_type }}*-*.*
-
 
       - name: Publish to codecov
         uses: codecov/codecov-action@v2

@@ -48,9 +48,6 @@ function(myproject_enable_doxygen DOXYGEN_THEME)
     # use the original doxygen theme
   endif()
 
-  # find doxygen and dot if available
-  find_package(Doxygen REQUIRED OPTIONAL_COMPONENTS dot)
-
   # add doxygen-docs target
   message(STATUS "Adding `doxygen-docs` target that builds the documentation.")
   doxygen_add_docs(doxygen-docs ALL ${PROJECT_SOURCE_DIR}

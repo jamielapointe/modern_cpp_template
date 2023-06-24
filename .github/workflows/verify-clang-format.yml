@@ -1,0 +1,21 @@
+name: verify-clang-format
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: DoozyX/clang-format-lint-action@v0.16.2
+        with:
+          source: "."
+          exclude: "./third_party ./external ./build ./out .cache .devcontainer .github .vscode"
+          extensions: "h,cpp,hpp"
+          clangFormatVersion: 16

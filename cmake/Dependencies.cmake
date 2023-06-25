@@ -34,11 +34,15 @@ function(myproject_setup_dependencies)
 
   if(NOT TARGET benchmark::benchmark)
     cpmaddpackage(
-      NAME benchmark
-      GITHUB_REPOSITORY google/benchmark
-      VERSION 1.8.0
-      OPTIONS "BENCHMARK_ENABLE_TESTING Off"
-              "CMAKE_BUILD_TYPE Release")
+      NAME
+      benchmark
+      GITHUB_REPOSITORY
+      google/benchmark
+      VERSION
+      1.8.0
+      OPTIONS
+      "BENCHMARK_ENABLE_TESTING Off"
+      "CMAKE_BUILD_TYPE Release")
 
     # add customizable options to include LIBPFM and LTO
 
@@ -49,19 +53,26 @@ function(myproject_setup_dependencies)
 
   if(NOT TARGET googletest::googletest)
     cpmaddpackage(
-      NAME googletest
-      GITHUB_REPOSITORY google/googletest
-      GIT_TAG v1.13.0
-      VERSION 1.13.0
-      OPTIONS "INSTALL_GTEST OFF"
-              "gtest_force_shared_crt ON"
-              "CMAKE_BUILD_TYPE Release"
-              "CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF")
+      NAME
+      googletest
+      GITHUB_REPOSITORY
+      google/googletest
+      GIT_TAG
+      v1.13.0
+      VERSION
+      1.13.0
+      OPTIONS
+      "INSTALL_GTEST OFF"
+      "gtest_force_shared_crt ON"
+      "CMAKE_BUILD_TYPE Release"
+      "CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF")
   endif()
-  if (googletest_ADDED)
+  if(googletest_ADDED)
     # disable annoying compiler warnings in GoogleTest
-    set_target_properties(gtest PROPERTIES COMPILE_FLAGS -Wno-implicit-int-float-conversion)
-    set_target_properties(gtest_main PROPERTIES COMPILE_FLAGS -Wno-implicit-int-float-conversion)
+    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      set_target_properties(gtest PROPERTIES COMPILE_FLAGS -Wno-implicit-int-float-conversion)
+      set_target_properties(gtest_main PROPERTIES COMPILE_FLAGS -Wno-implicit-int-float-conversion)
+    endif()
   endif()
 
 endfunction()

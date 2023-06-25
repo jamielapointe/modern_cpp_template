@@ -1,0 +1,20 @@
+# ignore third_party from clang-format checks
+third_party/
+
+# ignore out from clang-format checks
+out/
+
+# ignore build from clang-format checks
+build/
+
+# ignore .cache from clang-format checks
+.cache/
+
+# ignore .devcontainer from clang-format checks
+.devcontainer/
+
+# ignore .github from clang-format checks
+.github/
+
+# ignore .vscode from clang-format checks
+.vscode/

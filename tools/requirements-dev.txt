@@ -1,0 +1,2 @@
+pathspec == 0.10.3
+pyparsing == 3.0.9

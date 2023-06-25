@@ -1,0 +1,7 @@
+# include source directories
+#benchmark/
+#configured_files/
+#include/
+#src/
+#test/
+.

@@ -1,0 +1,1 @@
+target_sources(myproject_sample_app PUBLIC sample_app.cpp)

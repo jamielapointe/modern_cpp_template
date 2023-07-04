@@ -1,4 +1,6 @@
 # Enable doxygen doc builds of source
+# Parameters:
+#   DOXYGEN_THEME [in] - Optional theme for Doxygen generation
 function(myproject_enable_doxygen DOXYGEN_THEME)
   # If not specified, use the top readme file as the first page
   if((NOT DOXYGEN_USE_MDFILE_AS_MAINPAGE) AND EXISTS "${PROJECT_SOURCE_DIR}/README.md")

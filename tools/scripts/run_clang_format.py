@@ -22,7 +22,7 @@ import traceback
 from functools import partial
 
 import pathspec
-from pyparsing import DEVNULL, Iterator
+from pyparsing import Iterator
 
 DEFAULT_EXTENSIONS = 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx'
 
@@ -41,8 +41,8 @@ class ExitStatus:
 def list_from_file(ignore_file: str) -> list[str]:
     return_list = []
     try:
-        with io.open(ignore_file, 'r', encoding='utf-8') as f:
-            for line in f:
+        with io.open(ignore_file, 'r', encoding='utf-8') as fd:
+            for line in fd:
                 if line.startswith('#'):
                     # ignore comments
                     continue
@@ -77,13 +77,13 @@ def list_files(
 
     for file in files:
         if recursive and os.path.isdir(file):
-            for dirpath, dir_names, fnames in os.walk(file):
+            for dirpath, _, fnames in os.walk(file):
                 full_paths = [os.path.join(dirpath, fname) for fname in fnames]
                 full_paths = [x for x in full_paths if not spec.match_file(x)]
-                for f in full_paths:
-                    ext = os.path.splitext(f)[1][1:]
+                for full_path in full_paths:
+                    ext = os.path.splitext(full_path)[1][1:]
                     if ext in extensions:
-                        out.append(f)
+                        out.append(full_path)
         else:
             out.append(file)
     return out
@@ -128,8 +128,8 @@ def run_clang_format_diff_wrapper(args: argparse.Namespace,
 def run_clang_format_diff(args: argparse.Namespace,
                           file: str) -> tuple[list, list]:
     try:
-        with io.open(file, 'r', encoding='utf-8') as f:
-            original = f.readlines()
+        with io.open(file, 'r', encoding='utf-8') as fd:
+            original = fd.readlines()
     except IOError as exc:
         raise DiffError(str(exc)) from exc
 
@@ -190,9 +190,9 @@ def run_clang_format_diff(args: argparse.Namespace,
     errs = list(proc_stderr.readlines())
     proc.wait()
     if proc.returncode:
-        error_string = f(
-            'Command "{subprocess.list2cmdline(invocation)}" '
-            'returned non-zero exit status {proc.returncode}')
+        error_string = (
+            f'Command "{subprocess.list2cmdline(invocation)}" '
+            f'returned non-zero exit status {proc.returncode}')
         raise DiffError(error_string, errs)
     if args.in_place:
         return [], errs
@@ -333,7 +333,7 @@ def main():
 
     version_invocation = [args.clang_format_executable, str('--version')]
     try:
-        subprocess.check_call(version_invocation, stdout=DEVNULL)
+        subprocess.check_call(version_invocation, stdout=subprocess.DEVNULL)
     except subprocess.CalledProcessError as e:
         print_trouble(parser.prog, str(e), use_colors=colored_stderr)
         return ExitStatus.TROUBLE

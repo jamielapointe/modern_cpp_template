@@ -1,3 +1,7 @@
+# Enable static analyzers
+# Parameters:
+#   CPPCHECK_OPTIONS [in] - Optionally override CPPCHECK options; pass in empty
+#                           string to stick with default settings
 macro(myproject_enable_cppcheck CPPCHECK_OPTIONS)
   find_program(CPPCHECK cppcheck)
   if(CPPCHECK)
@@ -23,6 +27,7 @@ macro(myproject_enable_cppcheck CPPCHECK_OPTIONS)
           --suppress=unmatchedSuppression
           # noisy and incorrect sometimes
           --suppress=passedByValue
+          --suppress=noExplicitConstructor
           # ignores code that cppcheck thinks is invalid C++
           --suppress=syntaxError
           --suppress=preprocessorErrorDirective
@@ -44,9 +49,17 @@ macro(myproject_enable_cppcheck CPPCHECK_OPTIONS)
   endif()
 endmacro()
 
+# Enable clang-tidy static analysis checking during build time
+# Parameters: <none>
 macro(myproject_enable_clang_tidy target)
 
-  find_program(CLANGTIDY clang-tidy)
+  find_program(
+    CLANGTIDY
+    NAMES clang-tidy-16
+          clang-tidy-17
+          clang-tidy-18
+          clang-tidy-19
+          clang-tidy)
   if(CLANGTIDY)
     if(NOT
        CMAKE_CXX_COMPILER_ID
@@ -72,18 +85,8 @@ macro(myproject_enable_clang_tidy target)
         -extra-arg=-Wno-unknown-warning-option
         -extra-arg=-Wno-ignored-optimization-argument
         -extra-arg=-Wno-unused-command-line-argument
-        -p)
-    # set standard
-    if(NOT
-       "${CMAKE_CXX_STANDARD}"
-       STREQUAL
-       "")
-      if("${CLANG_TIDY_OPTIONS_DRIVER_MODE}" STREQUAL "cl")
-        set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=/std:c++${CMAKE_CXX_STANDARD})
-      else()
-        set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=-std=c++${CMAKE_CXX_STANDARD})
-      endif()
-    endif()
+        -p
+        ${MYPROJECT_BUILD_ROOT})
 
     message("Also setting clang-tidy globally")
     set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_OPTIONS})
@@ -92,6 +95,7 @@ macro(myproject_enable_clang_tidy target)
   endif()
 endmacro()
 
+# Enable the include what use use check
 macro(myproject_enable_include_what_you_use)
   find_program(INCLUDE_WHAT_YOU_USE include-what-you-use)
   if(INCLUDE_WHAT_YOU_USE)

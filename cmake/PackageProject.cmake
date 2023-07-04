@@ -1,6 +1,7 @@
 # Uses ycm (permissive BSD-3-Clause license) and ForwardArguments (permissive MIT license)
 
 # TODO(jlapointe) redo this with the package manager my projects intend to use
+#  Such as Conan
 
 function(myproject_package_project)
   cmake_policy(SET CMP0103 NEW) # disallow multiple calls with the same NAME

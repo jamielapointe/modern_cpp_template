@@ -1,3 +1,7 @@
+# Test for libfuzzer
+# More information: https://llvm.org/docs/LibFuzzer.html
+# Parameters:
+#   var_name [out] - True if libfuzzer is available; else False
 function(myproject_check_libfuzzer_support var_name)
   set(LibFuzzerTestSource
       "

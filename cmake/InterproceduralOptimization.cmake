@@ -1,3 +1,4 @@
+# Enable interprocedural (i.e., link time) optimization (IPO/LTO)
 macro(myproject_enable_ipo)
   include(CheckIPOSupported)
   check_ipo_supported(RESULT result OUTPUT output)

@@ -69,3 +69,5 @@ Thumbs.db
 
 # other generated files
 *.html
+Testing/
+*.profraw

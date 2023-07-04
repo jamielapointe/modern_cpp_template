@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15...3.23)
+cmake_minimum_required(VERSION 3.25)
 
 project(CmakeConfigPackageTests LANGUAGES CXX)
 
@@ -17,18 +17,23 @@ endif()
 
 # ---- Dependencies ----
 
-add_executable(tests test_main.cpp factorial_test.cpp fibonacci_test.cpp)
-target_link_libraries(
-  tests
-  PRIVATE myproject::myproject_warnings
-          myproject::myproject_options
-          myproject::sample_library)
-
+add_executable(
+  myproject_tests
+  test_binary_exponentiation.cpp
+  test_breadth_first_search_unordered.cpp
+  test_factorial.cpp
+  test_fibonacci.cpp
+  test_main.cpp)
+target_include_directories(myproject_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${MYPROJECT_ROOT}/include
+                                                   ${MYPROJECT_BUILD_ROOT}/configured_files/include)
+target_link_libraries(myproject_tests PRIVATE myproject::myproject_options myproject::myproject_warnings)
 target_link_system_libraries(
-  tests
+  myproject_tests
   PRIVATE
   GTest::gtest_main
-)
+  fmt::fmt
+  quill::quill
+  Microsoft.GSL::GSL)
 
 include(GoogleTest)
-gtest_discover_tests(tests XML_OUTPUT_DIR ${CMAKE_BINARY_DIR})
+gtest_discover_tests(myproject_tests XML_OUTPUT_DIR ${CMAKE_BINARY_DIR})

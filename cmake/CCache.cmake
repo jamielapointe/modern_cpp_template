@@ -1,4 +1,4 @@
-# Enable cache if available
+# Enable ccache if available
 function(myproject_enable_cache)
   set(CACHE_OPTION
       "ccache"

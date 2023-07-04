@@ -1,38 +1,37 @@
 include(CheckCXXCompilerFlag)
 
-macro(
-  myproject_enable_hardening
-  target
-  global
-  ubsan_minimal_runtime)
-
-  message(STATUS "** Enabling Hardening (Target ${target}) **")
+# Enable hardening (stack protection, etc.)
+#
+# Parameters:
+#   TARGET                [in] - The name of the TARGET_NAME to be built
+#   GLOBAL                [in] - If true, then apply the settings globally or
+#                                only to the passed in target
+#   UBSAN_MINIMAL_RUNTIME [in] - Enable the undefined behavior minimal runtime
+#                                that is suitable for the production
+#                                environment.
+#                                https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+macro(myproject_enable_hardening TARGET_NAME UBSAN_MINIMAL_RUNTIME)
+  message(STATUS "** Enabling Hardening (Target ${TARGET_NAME}) **")
 
   if(MSVC)
-    set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} /sdl /DYNAMICBASE /guard:cf")
+    target_compile_options(${TARGET_NAME} INTERFACE /sdl /DYNAMICBASE /guard:cf)
     message(STATUS "*** MSVC flags: /sdl /DYNAMICBASE /guard:cf /NXCOMPAT /CETCOMPAT")
-    set(NEW_LINK_OPTIONS "${NEW_LINK_OPTIONS} /NXCOMPAT /CETCOMPAT")
+    target_link_options(
+      ${TARGET_NAME}
+      INTERFACE
+      /NXCOMPAT
+      /CETCOMPAT)
 
   elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang|GNU")
-    set(NEW_CXX_DEFINITIONS "${NEW_CXX_DEFINITIONS} -D_GLIBCXX_ASSERTIONS")
+    target_compile_definitions(${TARGET_NAME} INTERFACE -D_GLIBCXX_ASSERTIONS)
     message(STATUS "*** GLIBC++ Assertions (vector[], string[], ...) enabled")
 
-    set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3")
+    target_compile_options(${TARGET_NAME} INTERFACE -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3)
     message(STATUS "*** g++/clang _FORTIFY_SOURCE=3 enabled")
-
-    #    check_cxx_compiler_flag(-fpie PIE)
-    #if(PIE)
-    #  set(NEW_COMPILE_OPTIONS ${NEW_COMPILE_OPTIONS} -fpie)
-    #  set(NEW_LINK_OPTIONS ${NEW_LINK_OPTIONS} -pie)
-    #
-    #  message(STATUS "*** g++/clang PIE mode enabled")
-    #else()
-    #  message(STATUS "*** g++/clang PIE mode NOT enabled (not supported)")
-    #endif()
 
     check_cxx_compiler_flag(-fstack-protector-strong STACK_PROTECTOR)
     if(STACK_PROTECTOR)
-      set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} -fstack-protector-strong")
+      target_compile_options(${TARGET_NAME} INTERFACE -fstack-protector-strong)
       message(STATUS "*** g++/clang -fstack-protector-strong enabled")
     else()
       message(STATUS "*** g++/clang -fstack-protector-strong NOT enabled (not supported)")
@@ -40,7 +39,7 @@ macro(
 
     check_cxx_compiler_flag(-fcf-protection CF_PROTECTION)
     if(CF_PROTECTION)
-      set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} -fcf-protection")
+      target_compile_options(${TARGET_NAME} INTERFACE -fcf-protection)
       message(STATUS "*** g++/clang -fcf-protection enabled")
     else()
       message(STATUS "*** g++/clang -fcf-protection NOT enabled (not supported)")
@@ -49,7 +48,7 @@ macro(
     check_cxx_compiler_flag(-fstack-clash-protection CLASH_PROTECTION)
     if(CLASH_PROTECTION)
       if(LINUX OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} -fstack-clash-protection")
+        target_compile_options(${TARGET_NAME} INTERFACE -fstack-clash-protection)
         message(STATUS "*** g++/clang -fstack-clash-protection enabled")
       else()
         message(STATUS "*** g++/clang -fstack-clash-protection NOT enabled (clang on non-Linux)")
@@ -59,18 +58,23 @@ macro(
     endif()
   endif()
 
-  if(${ubsan_minimal_runtime})
-    check_cxx_compiler_flag("-fsanitize=undefined -fno-sanitize-recover=undefined -fsanitize-minimal-runtime"
-                            MINIMAL_RUNTIME)
-    if(MINIMAL_RUNTIME)
-      set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} -fsanitize=undefined -fsanitize-minimal-runtime")
-      set(NEW_LINK_OPTIONS "${NEW_LINK_OPTIONS} -fsanitize=undefined -fsanitize-minimal-runtime")
+  if(${UBSAN_MINIMAL_RUNTIME})
+    check_cxx_compiler_flag(-fsanitize=undefined UBSAN)
+    check_cxx_compiler_flag(-fsanitize-minimal-runtime SANITIZE_MINIMAL_RUNTIME)
+    check_cxx_compiler_flag(-fno-sanitize-recover=undefined NO_SANITIZE_RECOVER_UNDEFINED)
+    if(UBSAN AND SANITIZE_MINIMAL_RUNTIME)
+      target_compile_options(${TARGET_NAME} INTERFACE -fsanitize=undefined -fsanitize-minimal-runtime)
+      target_link_options(
+        ${TARGET_NAME}
+        INTERFACE
+        -fsanitize=undefined
+        -fsanitize-minimal-runtime)
 
-      if(NOT ${global})
-        set(NEW_COMPILE_OPTIONS "${NEW_COMPILE_OPTIONS} -fno-sanitize-recover=undefined")
-        set(NEW_LINK_OPTIONS "${NEW_LINK_OPTIONS} -fno-sanitize-recover=undefined")
+      if(NO_SANITIZE_RECOVER_UNDEFINED)
+        target_compile_options(${TARGET_NAME} INTERFACE -fno-sanitize-recover=undefined)
+        target_link_options(${TARGET_NAME} INTERFACE -fno-sanitize-recover=undefined)
       else()
-        message(STATUS "** not enabling -fno-sanitize-recover=undefined for global consumption")
+        message(STATUS "** not enabling -fno-sanitize-recover=undefined")
       endif()
 
       message(STATUS "*** ubsan minimal runtime enabled")
@@ -79,20 +83,5 @@ macro(
     endif()
   else()
     message(STATUS "*** ubsan minimal runtime NOT enabled (not requested)")
-  endif()
-
-  message(STATUS "** Hardening Compiler Flags: ${NEW_COMPILE_OPTIONS}")
-  message(STATUS "** Hardening Linker Flags: ${NEW_LINK_OPTIONS}")
-  message(STATUS "** Hardening Compiler Defines: ${NEW_CXX_DEFINITIONS}")
-
-  if(${global})
-    message(STATUS "** Setting hardening options globally for all dependencies")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NEW_COMPILE_OPTIONS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${NEW_LINK_OPTIONS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NEW_CXX_DEFINITIONS}")
-  else()
-    target_compile_options(${target} INTERFACE ${NEW_COMPILE_OPTIONS})
-    target_link_options(${target} INTERFACE ${NEW_LINK_OPTIONS})
-    target_compile_definitions(${target} INTERFACE ${NEW_CXX_DEFINITIONS})
   endif()
 endmacro()

@@ -1,10 +1,17 @@
----
-Checks: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,cert-*,abseil-*,google-*"
-WarningsAsErrors: "*"
-HeaderFilterRegex: ""
+# Checks that must pass prior to PR being pulled in
+# We had to disable cert-dc158-cpp becuase it is complaining about
+#
+# "/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../include/c++/12/bits/unique_ptr.h:52:11:"
+# note: 'std' namespace opened here
+# namespace std _GLIBCXX_VISIBILITY(default)"
+#
+# This error is confusing becuase it is complaining about a system header, which
+# are supposed to be ignored...
+Checks: "cppcoreguidelines-*,cert-*,abseil-*,google-*,-cert-dcl58-cpp"
+WarningsAsErrors: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,cert-*,abseil-*,google-*"
+HeaderFilterRegex: "myproject.*h"
 AnalyzeTemporaryDtors: false
-FormatStyle: none
-User: jamielapointe
+FormatStyle: file
 CheckOptions:
   modernize-replace-auto-ptr.IncludeStyle: llvm
   cppcoreguidelines-no-malloc.Reallocations: "::realloc"
@@ -97,4 +104,3 @@ CheckOptions:
   cert-dcl16-c.IgnoreMacros: "true"
   llvm-else-after-return.WarnOnUnfixable: "false"
   cert-msc32-c.DisallowedSeedTypes: "time_t,std::time_t"
----

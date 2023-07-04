@@ -8,4 +8,4 @@
 
 This is a fork of [cpp-best-practices/cmake_template](https://github.com/cpp-best-practices/cmake_template) mostly to be used for my own personal projects.
 
-This is a C++ based template for getting up and running with C++ quickly.
+This is a C++ based template for getting up and running with modern C++ quickly.

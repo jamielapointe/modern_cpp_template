@@ -1,3 +1,5 @@
+# Currently this is only support Ubuntu 22.04 with gcc 12 and llvm/clang 16 compilers
+
 name: ci
 on:
   pull_request:
@@ -9,187 +11,160 @@ on:
       - develop
 
 env:
-  CLANG_TIDY_VERSION: "15"
+  CLANG_TIDY_VERSION: "16"
   VERBOSE: 1
+  PROJECT_NAME: myproject
 
 jobs:
   Cpp_Format:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install clang-format
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10.9"
           cache: "pip"
           cache-dependency-path: "tools/requirements-dev.txt"
-      - run: pip install -r tools/requirements-dev.txt
-      - name: Verify C++ code adheres to style guide
-        run: python tools/scripts/run_clang_format.py -r
 
-  Test:
-    runs-on: ${{ matrix.os }}
+      - name: Install Python requirements
+        run: pip install -r tools/requirements-dev.txt
+
+      - name: Verify C++ code adheres to style guide
+        run: python tools/scripts/run_clang_format.py -r --clang-format-executable clang-format-16
+
+  # To many things about building and testing are a bit OS depdenent, so create seperate jobs for each OS
+  LinuxTests:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-
-      # Recommendations:
-      #   * support at least 2 operating systems
-      #   * support at least 2 compilers
-      #   * make sure all supported configurations for your project are built
-      #
-      # Disable/enable builds in this list to meet the above recommendations
-      # and your own projects needs
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
         compiler:
-          - llvm-15
-          - gcc-12
+          - clang++-16
+          - g++-12
         generator:
-          - "Ninja Multi-Config"
+          - "Ninja"
         build_type:
           - Release
           - Debug
-        packaging_maintainer_mode:
-          - ON
-          - OFF
+        sanitizers:
+          - true
+          - false
+        enable_ipo:
+          - true
+          - false
         build_shared:
           - OFF
-
-        exclude:
-          # mingw is determined by this author to be too buggy to support
-          - os: windows-2019
-            compiler: gcc-12
-
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - compiler: gcc-12
-            gcov_executable: gcov
-            enable_ipo: On
+          - compiler: g++-12
+            gcov_executable: gcov-12
+            ccompiler: gcc-12
+            cmake_ar: ar-12
+            cmake_ranlib: ranlib-12
 
-          - compiler: llvm-15
-            enable_ipo: Off
-            gcov_executable: "llvm-cov gcov"
-
-          - os: macos-10.15
-            enable_ipo: Off
+          # Source based code coverage
+          - compiler: clang++-16
+            gcov_executable: "llvm-cov-16 gcov"
+            ccompiler: clang-16
+            cmake_ar: llvm-ar-16
+            cmake_ranlib: llvm-ranlib-16
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
-            packaging_maintainer_mode: OFF
             package_generator: TBZ2
 
-          # This exists solely to make sure a non-multiconfig build works
-          - os: ubuntu-20.04
-            compiler: gcc-12
+          # This exists solely to make sure a Unix Makefile build works
+          - os: ubuntu-latest
+            compiler: clang++-16
             generator: "Unix Makefiles"
-            build_type: Debug
-            gcov_executable: gcov
-            packaging_maintainer_mode: On
-            enable_ipo: Off
-
-          # Windows msvc builds
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Debug
-            packaging_maintainer_mode: On
-            enable_ipo: On
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
             build_type: Release
-            packaging_maintainer_mode: On
-            enable_ipo: On
+            enable_ipo: true
+            gcov_executable: "llvm-cov-16 gcov"
+            ccompiler: clang-16
+            cmake_ar: llvm-ar-16
+            cmake_ranlib: llvm-ranlib-16
+            sanitizers: true
 
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Debug
-            packaging_maintainer_mode: Off
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
+        exclude:
+          - compiler: g++-12
             build_type: Release
-            packaging_maintainer_mode: Off
-            package_generator: ZIP
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Release
-            packaging_maintainer_mode: On
-            enable_ipo: On
-            build_shared: On
+            sanitizers: true
+          - build_type: Debug
+            enable_ipo: false
 
     steps:
-      - name: Check for llvm version mismatches
-        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
-
       - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4
 
       - name: Setup Cache
         uses: ./.github/actions/setup_cache
         with:
           compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
-          packaging_maintainer_mode: ${{ matrix.packaging_maintainer_mode }}
           generator: ${{ matrix.generator }}
-
-      - name: Project Name
-        uses: cardinalby/export-env-action@v2
-        with:
-          envFile: ".github/constants.env"
-
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
-          cmake: true
-          ninja: true
-          vcpkg: false
-          ccache: true
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-
-          cppcheck: true
-
-          gcovr: true
-          opencppcoverage: true
 
       - name: Configure CMake
         run: |
-          cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO=${{matrix.enable_ipo }} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_PACKAGING_MAINTAINER_MODE:BOOL=${{matrix.packaging_maintainer_mode}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
+          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -Dmyproject_ENABLE_SANITIZER_ADDRESS=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_LEAK=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_UNDEFINED=${{matrix.sanitizers}}
 
       - name: Build
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: |
-          cmake --build ./build --config ${{matrix.build_type}}
-
-      - name: Unix - Test and coverage
-        if: runner.os != 'Windows'
-        working-directory: ./build
-        # Execute tests defined by the CMake configuration.
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: |
-          ctest -C ${{matrix.build_type}}
-          gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
-
-      - name: Windows - Test and coverage
-        if: runner.os == 'Windows'
+        if: ${{contains(matrix.generator, 'Ninja')}}
         working-directory: ./build
         run: |
-          OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
+          ninja -v
+
+      - name: Build
+        if: ${{contains(matrix.generator, 'Makefile')}}
+        working-directory: ./build
+        run: |
+          make VERBOSE=1 -j all
+
+      - name: Benchmark Tests
+        if: ${{matrix.build_type == 'Release' && matrix.sanitizers == false}}
+        working-directory: ./build
+        run: |
+          # sudo cpupower -c all frequency-set --governor performance
+          sudo perf stat ./myproject_benchmark
+
+      - name: Clang Test and coverage
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug' && matrix.sanitizers == true}}
+        working-directory: ./build/test
+        run: |
+          ./myproject_tests
+          llvm-profdata-16 merge -sparse default.profraw -o myproject_tests.profdata
+          llvm-cov-16 report ./myproject_tests -instr-profile=myproject_tests.profdata
+          llvm-cov-16 export ./myproject_tests -instr-profile=myproject_tests.profdata > coverage.json
+          # Note that for a detailed report run:
+          # llvm-cov-16 show ./myproject_tests -instr-profile=myproject_tests.profdata
+          # More info: https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
+
+      - name: GCC Test and coverage
+        if: ${{matrix.compiler == 'g++-12' && matrix.build_type == 'Debug' && matrix.sanitizers == true}}
+        working-directory: ./build/test
+        run: |
+          ./myproject_tests
+          gcovr -j --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov-12'
+
+      - name: CMake Tests
+        if: ${{matrix.sanitizers == true}}
+        working-directory: ./build
+        run: |
+          ctest
 
       - name: CPack
         if: matrix.package_generator != ''
@@ -205,8 +180,12 @@ jobs:
             build/*-*${{ matrix.build_type }}*-*.*
 
       - name: Publish to codecov
-        uses: codecov/codecov-action@v2
+        if: ${{matrix.build_type == 'Debug' && matrix.sanitizers == true}}
+        uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
-          files: ./build/coverage.xml
+          verbose: true
+          fail_ci_if_error: true
+          files: ./build/test/coverage.xml,./build/test/coverage.json

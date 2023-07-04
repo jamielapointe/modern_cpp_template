@@ -1,10 +1,18 @@
-macro(myproject_configure_linker project_name)
+# Allow the user to select a user-configuralbe linker, such as lld, gold, bfd,
+# or mold.
+# Parameters:
+#   TARGET_NAME [in] - The name of the target to use the custom linker
+macro(myproject_configure_linker TARGET_NAME)
   include(CheckCXXCompilerFlag)
 
   set(USER_LINKER_OPTION
       "lld"
       CACHE STRING "Linker to be used")
-  set(USER_LINKER_OPTION_VALUES "lld" "gold" "bfd" "mold")
+  set(USER_LINKER_OPTION_VALUES
+      "lld"
+      "gold"
+      "bfd"
+      "mold")
   set_property(CACHE USER_LINKER_OPTION PROPERTY STRINGS ${USER_LINKER_OPTION_VALUES})
   list(
     FIND
@@ -26,6 +34,6 @@ macro(myproject_configure_linker project_name)
 
   check_cxx_compiler_flag(${LINKER_FLAG} CXX_SUPPORTS_USER_LINKER)
   if(CXX_SUPPORTS_USER_LINKER)
-    target_compile_options(${project_name} INTERFACE ${LINKER_FLAG})
+    target_compile_options(${TARGET_NAME} INTERFACE ${LINKER_FLAG})
   endif()
 endmacro()

@@ -50,48 +50,6 @@ CMake uses the environment variables CC and CXX to decide which compiler to use.
 
   - Save and close the file
 
-- Windows
-
-  - Permanent
-  - Run one of the followings in PowerShell:
-
-    - Visual Studio generator and compiler (cl)
-
-      ```bash
-      [Environment]::SetEnvironmentVariable("CC", "cl.exe", "User")
-      [Environment]::SetEnvironmentVariable("CXX", "cl.exe", "User")
-      refreshenv
-      ```
-
-    - Set the architecture using [vcvarsall](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019#vcvarsall-syntax):
-
-      ```bash
-      vcvarsall.bat x64
-      ```
-
-    - clang
-
-      ```bash
-      [Environment]::SetEnvironmentVariable("CC", "clang.exe", "User")
-      [Environment]::SetEnvironmentVariable("CXX", "clang++.exe", "User")
-      refreshenv
-      ```
-
-    - gcc
-
-      ```bash
-      [Environment]::SetEnvironmentVariable("CC", "gcc.exe", "User")
-      [Environment]::SetEnvironmentVariable("CXX", "g++.exe", "User")
-      refreshenv
-      ```
-
-  - Temporarily (only for the current shell):
-
-    ```bash
-    $Env:CC="clang.exe"
-    $Env:CXX="clang++.exe"
-    ```
-
 ## (2) Configure your build
 
 To configure the project, you could use `cmake`, or `ccmake` or `cmake-gui`. Each of them are explained in the following:
@@ -106,7 +64,7 @@ cmake -S . -B ./build
 
 Cmake will automatically create the `./build` folder if it does not exist, and it wil configure the project.
 
-Instead, if you have CMake version 3.21+, you can use one of the configuration presets that are listed in the CmakePresets.json file.
+Instead, if you have CMake version 3.25+, you can use one of the configuration presets that are listed in the CmakePresets.json file.
 
 ```bash
 cmake . --preset <configure-preset>
@@ -144,34 +102,15 @@ In cmake-gui, from the upper menu select `Tools/Configure`.
 
 **Warning**: if you have set `CC` and `CXX` always choose the `use default native compilers` option. This picks `CC` and `CXX`. Don't change the compiler at this stage!
 
-#### Windows - MinGW Makefiles
-
-Choose MinGW Makefiles as the generator:
-
-![mingw](https://user-images.githubusercontent.com/16418197/82769479-616ade80-9dfa-11ea-899e-3a8c31d43032.png)
-
-Windows - Visual Studio generator and compiler
-
-You should have already set `C` and `CXX` to `cl.exe`.
-
-Choose "Visual Studio 16 2019" as the generator:
-
-![default_vs](https://user-images.githubusercontent.com/16418197/82524696-32502680-9af5-11ea-9697-a42000e900a6.jpg)
-
 #### Windows - Visual Studio generator and Clang Compiler
 
 You should have already set `C` and `CXX` to `clang.exe` and `clang++.exe`.
 
-Choose "Visual Studio 16 2019" as the generator. To tell Visual studio to use `clang-cl.exe`:
+Choose "Visual Studio 17 2022" as the generator. To tell Visual studio to use `clang-cl.exe`:
 
 - If you use the LLVM that is shipped with Visual Studio: write `ClangCl` under "optional toolset to use".
 
 ![visual_studio](https://user-images.githubusercontent.com/16418197/82781142-ae60ac00-9e1e-11ea-8c77-222b005a8f7e.png)
-s
-
-- If you use an external LLVM: write [`LLVM_v142`](https://github.com/zufuliu/llvm-utils#llvm-for-visual-studio-2017-and-2019) under "optional toolset to use".
-
-![visual_studio](https://user-images.githubusercontent.com/16418197/82769558-b3136900-9dfa-11ea-9f73-02ab8f9b0ca4.png)
 
 2.c.4) Choose the Cmake options and then generate:
 

@@ -11,22 +11,40 @@ namespace myproject::options {
 // Convert CMake value types: OFF, ON
 // to: 0, 1 which C++ can easily handle
 enum class Cmake_Bool { OFF, ON };
+using enum Cmake_Bool;
 
 // Convert CMake string & integer options to C++ constexpr std::string_view and
 // int respectively
 // clang-format off
-inline constexpr std::string_view project_name = "@PROJECT_NAME@";
-inline constexpr std::string_view project_version = "@PROJECT_VERSION@";
-inline constexpr int project_version_major { @PROJECT_VERSION_MAJOR@ };
-inline constexpr int project_version_minor { @PROJECT_VERSION_MINOR@ };
-inline constexpr int project_version_patch { @PROJECT_VERSION_PATCH@ };
-inline constexpr int project_version_tweak { @PROJECT_VERSION_TWEAK@ };
-inline constexpr std::string_view git_sha = "@GIT_SHA@";
+inline constexpr std::string_view kProjectName = "@PROJECT_NAME@";
+inline constexpr std::string_view kProjectVersion = "@PROJECT_VERSION@";
+inline constexpr int kProjectVersionMajor { @PROJECT_VERSION_MAJOR@ };
+inline constexpr int kProjectVersionMinor { @PROJECT_VERSION_MINOR@ };
+inline constexpr int kProjectVersionPatch { @PROJECT_VERSION_PATCH@ };
+inline constexpr int kProjectVersionTweak { @PROJECT_VERSION_TWEAK@ };
+inline constexpr std::string_view kGitSha = "@GIT_SHA@";
+inline constexpr std::string_view kSystemName = "@SYSTEM_NAME@";
+inline constexpr std::string_view kSystemVersion = "@SYSTEM_VERSION@";
+inline constexpr std::string_view kSystemProcessor = "@SYSTEM_PROCESSOR@";
 
 // Convert CMake Boolean options from PPD to constexpr bool
-inline constexpr bool enable_internal_debugging {
-  static_cast<bool>(Cmake_Bool::@myproject_ENABLE_INTERNAL_DEBUGGING@)
-};
+inline constexpr bool kEnableInternalDebugging {static_cast<bool>(@myproject_ENABLE_INTERNAL_DEBUGGING@)};
+
+inline constexpr bool kEnableSanitizerAddress {static_cast<bool>(@myproject_ENABLE_SANITIZER_ADDRESS@)};
+inline constexpr bool kEnableSanitizerLeak {static_cast<bool>(@myproject_ENABLE_SANITIZER_LEAK@)};
+inline constexpr bool kEnableSanitizerUndefined {static_cast<bool>(@myproject_ENABLE_SANITIZER_UNDEFINED@)};
+inline constexpr bool kEnableSanitizerThread {static_cast<bool>(@myproject_ENABLE_SANITIZER_THREAD@)};
+inline constexpr bool kEnableSanitizerMemory {static_cast<bool>(@myproject_ENABLE_SANITIZER_MEMORY@)};
+inline constexpr bool kEnableSanitizerHardening {static_cast<bool>(@myproject_ENABLE_HARDENING@)};
+
+constexpr bool is_debug() {
+  #if defined(NDEBUG)
+    return false;
+  #else
+    return true;
+  #endif
+}
+
 // clang-format on
 
 }  // namespace myproject::options

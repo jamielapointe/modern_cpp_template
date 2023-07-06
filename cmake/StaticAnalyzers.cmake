@@ -85,6 +85,7 @@ macro(myproject_enable_clang_tidy target)
         -extra-arg=-Wno-unknown-warning-option
         -extra-arg=-Wno-ignored-optimization-argument
         -extra-arg=-Wno-unused-command-line-argument
+        "-line-filter=[{'name':'macros.h','lines':[[999999,999999]]}]"
         -p
         ${MYPROJECT_BUILD_ROOT})
 

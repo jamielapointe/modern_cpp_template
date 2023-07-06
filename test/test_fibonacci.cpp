@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
+#include "gtest/gtest.h"
 #include "myproject/fibonacci.h"
+#include "myproject_config.h"
 
 using myproject::algorithms::fibonacci;
 using myproject::algorithms::fibonacci_fast1;
@@ -25,7 +27,8 @@ TEST(FibonacciTest, FibonacciTest00) {
   ASSERT_EQ(fibonacci(64), 10610209857723);
   ASSERT_EQ(fibonacci(91), 4660046610375530309);
   ASSERT_EQ(fibonacci(92), 7540113804746346429);
-  ASSERT_DEATH(fibonacci(93), "signed integer overflow");
+  ASSERT_EXIT(fibonacci(93), testing::KilledBySignal(SIGABRT),
+              "number <= internal::kMaxFibonacciNumber");
 }
 
 TEST(FibonacciTest, FibonacciFast1Test00) {
@@ -45,7 +48,8 @@ TEST(FibonacciTest, FibonacciFast1Test00) {
   ASSERT_EQ(fibonacci_fast1(28), 317811);
   ASSERT_EQ(fibonacci_fast1(56), 225851433717);
   ASSERT_EQ(fibonacci_fast1(63), 6557470319842);
-  ASSERT_DEATH(fibonacci_fast1(64), "signed integer overflow");
+  ASSERT_EXIT(fibonacci_fast1(64), testing::KilledBySignal(SIGABRT),
+              "number <= internal::kMaxFibonacciFast1Number");
 }
 
 TEST(FibonacciTest, FibonacciFast2Test00) {
@@ -67,5 +71,6 @@ TEST(FibonacciTest, FibonacciFast2Test00) {
   ASSERT_EQ(fibonacci_fast2(64), 10610209857723);
   ASSERT_EQ(fibonacci_fast2(91), 4660046610375530309);
   ASSERT_EQ(fibonacci_fast2(92), 7540113804746346429);
-  ASSERT_DEATH(fibonacci_fast2(93), "signed integer overflow");
+  ASSERT_EXIT(fibonacci_fast2(93), testing::KilledBySignal(SIGABRT),
+              "number <= internal::kMaxFibonacciFast2Number");
 }

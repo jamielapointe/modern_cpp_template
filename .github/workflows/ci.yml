@@ -11,7 +11,6 @@ on:
       - develop
 
 env:
-  CLANG_TIDY_VERSION: "16"
   VERBOSE: 1
   PROJECT_NAME: myproject
 
@@ -60,8 +59,6 @@ jobs:
         enable_ipo:
           - true
           - false
-        build_shared:
-          - OFF
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
@@ -99,7 +96,7 @@ jobs:
             build_type: Release
             sanitizers: true
           - build_type: Debug
-            enable_ipo: false
+            enable_ipo: true
 
     steps:
       - uses: actions/checkout@v3
@@ -120,7 +117,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -Dmyproject_ENABLE_SANITIZER_ADDRESS=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_LEAK=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_UNDEFINED=${{matrix.sanitizers}}
+          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -Dmyproject_ENABLE_SANITIZER_ADDRESS:BOOL=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_LEAK:BOOL=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_UNDEFINED:BOOL=${{matrix.sanitizers}}
 
       - name: Build
         if: ${{contains(matrix.generator, 'Ninja')}}
@@ -142,7 +139,7 @@ jobs:
           sudo perf stat ./myproject_benchmark
 
       - name: Clang Test and coverage
-        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug' && matrix.sanitizers == true}}
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
         working-directory: ./build/test
         run: |
           ./myproject_tests
@@ -154,14 +151,13 @@ jobs:
           # More info: https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
 
       - name: GCC Test and coverage
-        if: ${{matrix.compiler == 'g++-12' && matrix.build_type == 'Debug' && matrix.sanitizers == true}}
+        if: ${{matrix.compiler == 'g++-12' && matrix.build_type == 'Debug'}}
         working-directory: ./build/test
         run: |
           ./myproject_tests
           gcovr -j --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov-12'
 
       - name: CMake Tests
-        if: ${{matrix.sanitizers == true}}
         working-directory: ./build
         run: |
           ctest
@@ -180,7 +176,7 @@ jobs:
             build/*-*${{ matrix.build_type }}*-*.*
 
       - name: Publish to codecov
-        if: ${{matrix.build_type == 'Debug' && matrix.sanitizers == true}}
+        if: ${{matrix.build_type == 'Debug'}}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

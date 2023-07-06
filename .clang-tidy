@@ -1,12 +1,4 @@
-# Checks that must pass prior to PR being pulled in
-# We had to disable cert-dc158-cpp becuase it is complaining about
-#
-# "/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../include/c++/12/bits/unique_ptr.h:52:11:"
-# note: 'std' namespace opened here
-# namespace std _GLIBCXX_VISIBILITY(default)"
-#
-# This error is confusing becuase it is complaining about a system header, which
-# are supposed to be ignored...
+# Error check settings
 Checks: "cppcoreguidelines-*,cert-*,abseil-*,google-*,-cert-dcl58-cpp"
 WarningsAsErrors: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,cert-*,abseil-*,google-*"
 HeaderFilterRegex: "myproject.*h"

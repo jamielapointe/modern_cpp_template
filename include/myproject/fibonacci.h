@@ -16,36 +16,16 @@
 #include <utility>
 #include <variant>
 
-#include "binary_exponentiation.h"
-#include "myproject_asserts.h"
+#include "myproject/binary_exponentiation.h"
+#include "myproject/macros.h"
 
 namespace myproject::algorithms {
 
-///@brief Compute the n'th Fibonacci sequence for an integer
-/// Let number = \f$a\f$.  If \f$a \le 1 \f$a, then return \f$a\f$ else return
-/// the proper fibonacci series: let \f$F_n\f$ be the fibonacci series for index
-/// \f$n\f$, then \f$F_n = F_{n-1} + F_{n+2}\f$.
-/// This is the naive implementation has time complexity of
-/// \f$ \mathcal{O}\left(n\right) \f$
-///@param number the n'th sequence of the Fibonacci numbers
-///@return constexpr int64_t If \f$a \le 1 \f$a, then return \f$a\f$ else return
-/// the proper fibonacci series
-inline constexpr int64_t fibonacci(int64_t number) noexcept {
-  int64_t previous_iteration_one{0};
-  int64_t previous_iteration_zero{1};
-  int64_t current_iteration{0};
-  if (number <= 1) {
-    return number;
-  }
-  for (int64_t i = 2; i <= number; ++i) {
-    current_iteration = previous_iteration_one + previous_iteration_zero;
-    previous_iteration_one = previous_iteration_zero;
-    previous_iteration_zero = current_iteration;
-  }
-  return current_iteration;
-}
-
 namespace internal {
+
+static constexpr int64_t kMaxFibonacciNumber{92};
+static constexpr int64_t kMaxFibonacciFast1Number{63};
+static constexpr int64_t kMaxFibonacciFast2Number{92};
 
 ///@brief This is a ridiculously simple Matrix just to support the
 /// fibonacci_fast1_internal algorithm
@@ -82,8 +62,13 @@ class Simple_Fibonacci_Matrix_2_2 {
     if (list.begin() != list.end()) {
       list_size = list.begin()->size();
     }
-    myproject_assert(list.size() == static_cast<size_t>(kNumRows));
-    myproject_assert(list_size == static_cast<size_t>(kNumCols));
+    myproject_assert_message(
+        list.size() == static_cast<size_t>(kNumRows),
+        "The first dimension of list does not contain the proper "
+        "number of rows");
+    myproject_assert_message(list_size == static_cast<size_t>(kNumCols),
+                             "The second dimension of list does not contain "
+                             "the proper number of columns");
     Index row_index{0};
     for (auto const &row : list) {
       myproject_assert(list_size == row.size());
@@ -295,12 +280,40 @@ inline constexpr std::pair<int64_t, int64_t> fibonacci_fast2_internal(
 /// Let number = \f$a\f$.  If \f$a \le 1 \f$a, then return \f$a\f$ else return
 /// the proper fibonacci series: let \f$F_n\f$ be the fibonacci series for index
 /// \f$n\f$, then \f$F_n = F_{n-1} + F_{n+2}\f$.
+/// This is the naive implementation has time complexity of
+/// \f$ \mathcal{O}\left(n\right) \f$
+///@param number the n'th sequence of the Fibonacci numbers
+///@return constexpr int64_t If \f$a \le 1 \f$a, then return \f$a\f$ else return
+/// the proper fibonacci series
+inline constexpr int64_t fibonacci(int64_t number) {
+  if (number <= 1) return number;
+  myproject_assert_message(number <= internal::kMaxFibonacciNumber,
+                           "number will cause a signed integer overflow");
+
+  int64_t previous_iteration_one{0};
+  int64_t previous_iteration_zero{1};
+  int64_t current_iteration{0};
+  for (int64_t i = 2; i <= number; ++i) {
+    current_iteration = previous_iteration_one + previous_iteration_zero;
+    previous_iteration_one = previous_iteration_zero;
+    previous_iteration_zero = current_iteration;
+  }
+  return current_iteration;
+}
+
+///@brief Compute the n'th Fibonacci sequence for an integer
+/// Let number = \f$a\f$.  If \f$a \le 1 \f$a, then return \f$a\f$ else return
+/// the proper fibonacci series: let \f$F_n\f$ be the fibonacci series for index
+/// \f$n\f$, then \f$F_n = F_{n-1} + F_{n+2}\f$.
 /// This is the fast implementation and has time complexity of
 /// \f$\mathcal{O}\left(\log{}n\right)\f$
 ///@param number the n'th sequence of the Fibonacci numbers
 ///@return constexpr the \f$F_n\f$ Fibonacci number
 inline constexpr int64_t fibonacci_fast1(int64_t number) noexcept {
   if (number <= 1) return number;
+  myproject_assert_message(number <= internal::kMaxFibonacciFast1Number,
+                           "number will cause a signed integer overflow");
+
   return internal::fibonacci_fast1_internal(number);
 }
 
@@ -314,6 +327,9 @@ inline constexpr int64_t fibonacci_fast1(int64_t number) noexcept {
 ///@return constexpr the \f$F_n\f$ Fibonacci number
 inline constexpr int64_t fibonacci_fast2(int64_t number) noexcept {
   if (number <= 1) return number;
+  myproject_assert_message(number <= internal::kMaxFibonacciFast2Number,
+                           "number will cause a signed integer overflow");
+
   return internal::fibonacci_fast2_internal(number - 1).second;
 }
 

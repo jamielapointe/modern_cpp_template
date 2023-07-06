@@ -5,8 +5,16 @@ find_package(fmt)
 
 target_sources(myproject_fuzz_tester PUBLIC fuzz_tester.cpp)
 
-target_link_libraries(myproject_fuzz_tester PRIVATE fmt::fmt -coverage -fsanitize=fuzzer)
+target_link_libraries(myproject_fuzz_tester PRIVATE fmt::fmt -fsanitize=fuzzer)
 target_compile_options(myproject_fuzz_tester PRIVATE -fsanitize=fuzzer)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(myproject_fuzz_tester PRIVATE --coverage)
+  target_link_libraries(myproject_fuzz_tester PRIVATE --coverage)
+endif()
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+  target_compile_options(myproject_fuzz_tester PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+  target_link_libraries(myproject_fuzz_tester PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+endif()
 
 # Allow short runs during automated testing to see if something new breaks
 set(FUZZ_RUNTIME

@@ -106,7 +106,7 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 16 all
-          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
 
       - name: Setup Cache
         uses: ./.github/actions/setup_cache

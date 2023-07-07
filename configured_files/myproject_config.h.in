@@ -1,6 +1,7 @@
 #ifndef MYPROJECT_CONFIG_HPP
 #define MYPROJECT_CONFIG_HPP
 
+#include <concepts>
 #include <string_view>
 
 // this is a basic example of how a CMake configured file might look
@@ -12,6 +13,24 @@ namespace myproject::options {
 // to: 0, 1 which C++ can easily handle
 enum class Cmake_Bool { OFF, ON };
 using enum Cmake_Bool;
+
+template <typename T>
+concept Is_Bool = std::convertible_to<T, bool>;
+
+template <typename T>
+concept Cast_Bool = !std::convertible_to<T, bool> && requires(T a) {
+  { static_cast<bool>(a) } -> std::convertible_to<bool>;
+};
+
+template <Is_Bool T>
+inline constexpr bool convert_cmake_bool(T in_bool) {
+  return in_bool;
+}
+
+template <Cast_Bool T>
+inline constexpr bool convert_cmake_bool(T in_bool) {
+  return static_cast<bool>(in_bool);
+}
 
 // Convert CMake string & integer options to C++ constexpr std::string_view and
 // int respectively
@@ -28,14 +47,14 @@ inline constexpr std::string_view kSystemVersion = "@SYSTEM_VERSION@";
 inline constexpr std::string_view kSystemProcessor = "@SYSTEM_PROCESSOR@";
 
 // Convert CMake Boolean options from PPD to constexpr bool
-inline constexpr bool kEnableInternalDebugging {static_cast<bool>(@myproject_ENABLE_INTERNAL_DEBUGGING@)};
+inline constexpr bool kEnableInternalDebugging {convert_cmake_bool(@myproject_ENABLE_INTERNAL_DEBUGGING@)};
 
-inline constexpr bool kEnableSanitizerAddress {static_cast<bool>(@myproject_ENABLE_SANITIZER_ADDRESS@)};
-inline constexpr bool kEnableSanitizerLeak {static_cast<bool>(@myproject_ENABLE_SANITIZER_LEAK@)};
-inline constexpr bool kEnableSanitizerUndefined {static_cast<bool>(@myproject_ENABLE_SANITIZER_UNDEFINED@)};
-inline constexpr bool kEnableSanitizerThread {static_cast<bool>(@myproject_ENABLE_SANITIZER_THREAD@)};
-inline constexpr bool kEnableSanitizerMemory {static_cast<bool>(@myproject_ENABLE_SANITIZER_MEMORY@)};
-inline constexpr bool kEnableSanitizerHardening {static_cast<bool>(@myproject_ENABLE_HARDENING@)};
+inline constexpr bool kEnableSanitizerAddress {convert_cmake_bool(@myproject_ENABLE_SANITIZER_ADDRESS@)};
+inline constexpr bool kEnableSanitizerLeak {convert_cmake_bool(@myproject_ENABLE_SANITIZER_LEAK@)};
+inline constexpr bool kEnableSanitizerUndefined {convert_cmake_bool(@myproject_ENABLE_SANITIZER_UNDEFINED@)};
+inline constexpr bool kEnableSanitizerThread {convert_cmake_bool(@myproject_ENABLE_SANITIZER_THREAD@)};
+inline constexpr bool kEnableSanitizerMemory {convert_cmake_bool(@myproject_ENABLE_SANITIZER_MEMORY@)};
+inline constexpr bool kEnableSanitizerHardening {convert_cmake_bool(@myproject_ENABLE_HARDENING@)};
 
 constexpr bool is_debug() {
   #if defined(NDEBUG)

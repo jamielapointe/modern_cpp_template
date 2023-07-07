@@ -21,7 +21,6 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "macros.h"
 #include "myproject_config.h"
 
 namespace myproject::internal {
@@ -64,10 +63,9 @@ struct assert_handler_impl<
   static inline void run(char const* const expression, char const* const file,
                          uint32_t line, char const* const function,
                          char const* const message) {
-    // if (message != nullptr && strlen(message) > 0) {
-    //   fmt::print(stderr, "Error Message: {}\n", message);
-    // }
-    static_cast<void>(message);
+    if (message != nullptr && strlen(message) > 0) {
+      fmt::print(stderr, "Error Message: {}\n", message);
+    }
     // GCC requires this call to be dependent on the template parameters.
     __assert_fail(expression, file, line, function,
                   std::declval<EmptyArgs>()...);

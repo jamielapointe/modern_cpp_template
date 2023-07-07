@@ -209,9 +209,8 @@ class UndirectedGraph {
   ///@param node_index The node index
   ///@return Node const&
   Node& get_node(NodeIndex node_index) {
-    auto node_map_size{node_map().size()};
     myproject_assert(node_index >= 0 &&
-                     static_cast<size_t>(node_index) < node_map_size);
+                     static_cast<size_t>(node_index) < node_map().size());
     auto node_iterator = node_map().find(node_index);
     [[likely]] if (node_iterator != node_map().end()) {
       return node_iterator->second;

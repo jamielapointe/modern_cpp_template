@@ -11,37 +11,93 @@
 // TODO(jlapointe) Perhaps provide some compile time options for handling and/or
 // disabling error handling
 
+// this is currently using ugly C style macros until we discover a better way...
+
 #pragma once
 
+#include <fmt/core.h>
+
 #include <cassert>
+#include <cstdint>
+#include <type_traits>
 
 #include "myproject_config.h"
 
-namespace myproject {
+namespace myproject::internal {
 
-///@brief This assert is meant for internal testing
-/// By default this assert is disabled even in Debug mode and is meant for
-/// internal library unit testing
-///@param conditional_statement A boolean statement that must evaluate to true
-/// to be valid
-inline void myproject_internal_assert(bool conditional_statement) {
-  if constexpr (myproject::options::enable_internal_debugging) {
-    assert(conditional_statement);
+// Generic default assert handler.
+template <typename EnableIf = void, typename... EmptyArgs>
+struct assert_handler_impl {
+  static inline void run(char const* const expression, char const* const file,
+                         uint32_t line, char const* const function,
+                         char const* const message) {
+    // Print to stderr and abort, as specified in <cassert>.
+    fmt::print(stderr, "Assertion failed at {}:{} in {}: {}\n",
+               file == nullptr ? "<file>" : file, line,
+               function == nullptr ? "<function>" : function, expression);
+    if (message != nullptr && strlen(message) > 0) {
+      fmt::print(stderr, "Error Message: {}\n", message);
+    }
+    std::abort();
   }
-  static_cast<void>(conditional_statement);
+};
+
+// Use POSIX __assert_fail handler when available.
+//
+// This allows us to integrate with systems that have custom handlers.
+//
+// NOTE: this handler is not always available on all POSIX systems (otherwise
+// we could simply test for __unix__ or similar).  The handler function name
+// seems to depend on the specific toolchain implementation, and differs between
+// compilers, platforms, OSes, etc.  Hence, we detect support via SFINAE.
+template <typename... EmptyArgs>
+struct assert_handler_impl<
+    std::void_t<decltype(__assert_fail(
+        static_cast<char const*>(nullptr),  // expression
+        static_cast<char const*>(nullptr),  // file
+        0,                                  // line
+        static_cast<char const*>(nullptr),  // function
+        std::declval<EmptyArgs>()...  // Empty substitution required for SFINAE.
+        ))>,
+    EmptyArgs...> {
+  static inline void run(char const* const expression, char const* const file,
+                         uint32_t line, char const* const function,
+                         char const* const message) {
+    if (message != nullptr && strlen(message) > 0) {
+      fmt::print(stderr, "Error Message: {}\n", message);
+    }
+    // GCC requires this call to be dependent on the template parameters.
+    __assert_fail(expression, file, line, function,
+                  std::declval<EmptyArgs>()...);
+  }
+};
+
+///\internal Define our own runtime assert function
+///\param expression String representation of the expression
+///\param file Source file where assert occurred
+///\param line Line number where assert occurred
+///\param function Function where assert occurred
+///\param message Optional error message
+inline void _assert_handler(char const* const expression,
+                            char const* const file, uint32_t line,
+                            char const* const function,
+                            char const* const message) {
+  assert_handler_impl<>::run(expression, file, line, function, message);
 }
 
-///@brief Define our own runtime assert function
-/// Currently just a wrapper around C assert.  However, depending on compile (or
-/// runtime) options, this can be modified to have other behaviour for when a
-/// condition check fails depending on the nature of the problem., such as
-/// doing nothing, logging and error, raising exceptions, signaling, etc.
-///@param conditional_statement
-inline void myproject_assert(bool conditional_statement) {
-  // for now this just translates to a simple cassert - this can be expanded to
-  // either do nothing, throw optional/default exceptions, etc.
-  assert(conditional_statement);
-  static_cast<void>(conditional_statement);
+///\internal This assert is meant for internal testing
+///\param expression String representation of the expression
+///\param file Source file where assert occurred
+///\param line Line number where assert occurred
+///\param function Function where assert occurred
+///\param message Optional error message
+inline void _internal_assert_handler(char const* const expression,
+                                     char const* const file, uint32_t line,
+                                     char const* const function,
+                                     char const* const message) {
+  if constexpr (myproject::options::kEnableInternalDebugging) {
+    _assert_handler(expression, file, line, function, message);
+  }
 }
 
-}  // namespace myproject
+}  // namespace myproject::internal

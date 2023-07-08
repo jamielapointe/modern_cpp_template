@@ -1,18 +1,19 @@
+#include "myproject/fibonacci.h"
 #include "myproject/undirected_graph.h"
+#include "myproject_config.h"
+
+using myproject::algorithms::fibonacci;
+using myproject::algorithms::fibonacci_fast1;
+using myproject::algorithms::fibonacci_fast2;
 
 namespace myproject::myproject_sample_app {
 
 void run_sample_app() {
-  // do something
-  // something else
-
-  // Remember to catch a possible exception when calling either get_edge_nodes
-  // or bfs try {
-  //   node_children = get_edge_nodes(node);
-  // } catch (std::logic_error const& exc) {
-  //   std::cerr << "Out of range error: " << exc.what() << '\n';
-  //   return;
-  // }
+  static constexpr int kFibonacciTooHigh{93};
+  static constexpr int kFibonacciFast1TooHigh{93};
+  fibonacci(kFibonacciTooHigh);
+  fibonacci_fast1(kFibonacciFast1TooHigh);
+  fibonacci_fast2(kFibonacciTooHigh);
 }
 
 }  // namespace myproject::myproject_sample_app

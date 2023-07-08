@@ -19,6 +19,7 @@ function(myproject_enable_doxygen DOXYGEN_THEME)
   # svg files are much smaller than jpeg and png, and yet they have higher quality
   set(DOXYGEN_DOT_IMAGE_FORMAT svg)
   set(DOXYGEN_DOT_TRANSPARENT YES)
+  set(DOXYGEN_WARN_AS_ERROR YES)
 
   # If not specified, exclude the vcpkg files and the files CMake downloads under _deps (like project_options)
   if(NOT DOXYGEN_EXCLUDE_PATTERNS)

@@ -20,7 +20,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "myproject/myproject_asserts.h"
+#include "myproject/macros.h"
 
 namespace myproject::algorithms::undirected_graph {
 
@@ -170,8 +170,7 @@ class UndirectedGraph {
   ///@param node_index The key of the Node whose Edge objects you want to return
   ///@return EdgeList&
   EdgeList const& get_edges(NodeIndex node_index) const {
-    myproject::myproject_assert(node_index >= 0 &&
-                                node_index < adjacency_map().size());
+    myproject_assert(node_index >= 0 && node_index < adjacency_map().size());
     auto edge_iterator = adjacency_map().find(node_index);
     [[likely]] if (edge_iterator != adjacency_map().end()) {
       return edge_iterator->second;
@@ -185,9 +184,8 @@ class UndirectedGraph {
   ///@param node_index The key of the Node whose Edge objects you want to return
   ///@return EdgeList&
   EdgeList& get_edges(NodeIndex node_index) {
-    myproject::myproject_assert(node_index >= 0 &&
-                                static_cast<size_t>(node_index) <
-                                    adjacency_map().size());
+    myproject_assert(node_index >= 0 &&
+                     static_cast<size_t>(node_index) < adjacency_map().size());
     auto edge_iterator = adjacency_map().find(node_index);
     [[likely]] if (edge_iterator != adjacency_map().end()) {
       return edge_iterator->second;
@@ -199,8 +197,7 @@ class UndirectedGraph {
   ///@param node_index The node index
   ///@return Node const&
   Node const& get_node(NodeIndex node_index) const {
-    myproject::myproject_assert(node_index >= 0 &&
-                                node_index < node_map().size());
+    myproject_assert(node_index >= 0 && node_index < node_map().size());
     auto node_iterator = node_map().find(node_index);
     [[likely]] if (node_iterator != node_map().end()) {
       return node_iterator->second;
@@ -212,8 +209,8 @@ class UndirectedGraph {
   ///@param node_index The node index
   ///@return Node const&
   Node& get_node(NodeIndex node_index) {
-    myproject::myproject_assert(
-        node_index >= 0 && static_cast<size_t>(node_index) < node_map().size());
+    myproject_assert(node_index >= 0 &&
+                     static_cast<size_t>(node_index) < node_map().size());
     auto node_iterator = node_map().find(node_index);
     [[likely]] if (node_iterator != node_map().end()) {
       return node_iterator->second;

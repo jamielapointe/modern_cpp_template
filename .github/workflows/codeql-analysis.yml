@@ -20,6 +20,10 @@ on:
   schedule:
     - cron: "38 0 * * 5"
 
+env:
+  VERBOSE: 1
+  PROJECT_NAME: myproject
+
 jobs:
   analyze:
     name: Analyze
@@ -36,52 +40,37 @@ jobs:
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
         compiler:
-          - llvm-15
+          - clang++-16
         generator:
-          - "Ninja Multi-Config"
+          - "Ninja"
         build_type:
-          - Debug
-        packaging_maintainer_mode:
-          - ON
+          - Release
+        include:
+          - compiler: clang++-16
+            ccompiler: clang-16
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
 
       - name: Setup Cache
         uses: ./.github/actions/setup_cache
         with:
           compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
-          packaging_maintainer_mode: ${{ matrix.packaging_maintainer_mode }}
           generator: ${{ matrix.generator }}
-
-      - name: Project Name
-        uses: cardinalby/export-env-action@v2
-        with:
-          envFile: ".github/constants.env"
-
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
-          cmake: true
-          ninja: true
-          vcpkg: false
-          ccache: true
-          clangtidy: false
-
-          cppcheck: false
-
-          gcovr: false
-          opencppcoverage: false
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
       - name: Configure CMake
         run: |
-          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_PACKAGING_MAINTAINER_MODE:BOOL=${{matrix.packaging_maintainer_mode}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }}
+          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }}
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

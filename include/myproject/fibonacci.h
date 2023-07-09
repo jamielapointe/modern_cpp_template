@@ -114,7 +114,7 @@ class Simple_Fibonacci_Matrix_2_2 {
 
   ///@brief Return the 2D array representation of the Matrix
   ///
-  ///@return Matrix_Data const& constant reference to teh 2D data
+  ///@return Matrix_Data const& constant reference to the 2D data
   Matrix_Data const &matrix_data() const {
     return std::get<Matrix_Data>(m_data);
   }

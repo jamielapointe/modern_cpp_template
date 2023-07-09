@@ -129,7 +129,7 @@ macro(myproject_setup_options)
 endmacro()
 
 # Setup the global options - effects myproject targets as well as third party
-# depedencies
+# dependencies
 macro(myproject_global_options)
   if(myproject_ENABLE_IPO)
     include(InterproceduralOptimization)

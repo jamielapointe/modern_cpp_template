@@ -72,7 +72,7 @@ function(myproject_enable_coverage TARGET_NAME)
   endif()
 endfunction()
 
-# Enable autovectorization - this is a bit platform depdendant; but usually it requires -O3 and -ffast-math compiler options
+# Enable autovectorization - this is a bit platform dependent; but usually it requires -O3 and -ffast-math compiler options
 # CMAKE_BUILD_TYPE "Release" enables -O3 by default.
 function(myproject_enable_autovectorization TARGET_NAME)
   if(NOT

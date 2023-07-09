@@ -21,6 +21,8 @@ runs:
         path: |
           ~/.cache/pip
           ~/.ccache
-        key: ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{ inputs.generator }}-${{ hashFiles('**/CMakeLists.txt') }}
+        key:
+          ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{
+          inputs.generator }}-${{ hashFiles('**/CMakeLists.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}

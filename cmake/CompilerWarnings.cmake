@@ -1,5 +1,5 @@
 # Set default compiler warnings for a project
-# Parmaeters:
+# Parameters:
 #   TARGET_NAME [in] - the target name to set compiler warnings for
 function(myproject_set_project_warnings TARGET_NAME)
   set(MSVC_WARNINGS
@@ -46,7 +46,7 @@ function(myproject_set_project_warnings TARGET_NAME)
       -Wformat=2 # warn on security issues around functions that format output (ie printf)
       -Wimplicit-fallthrough # warn on statements that fallthrough without an explicit annotation
       -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
-      -Werror # Turn warnings into errros
+      -Werror # Turn warnings into errors
       -Wfatal-errors # stop on the first error
   )
 

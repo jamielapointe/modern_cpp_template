@@ -1,0 +1,13 @@
+root = true
+
+[*]
+indent_style = space
+insert_final_newline = true
+end_of_line = lf
+trim_trailing_whitespace = true
+
+[*.py]
+indent_size = 4
+
+[*.yml,*.cpp,*.hpp,*.h,*.json,*.in,*.cmake,*.md,CMakeLists.txt]
+indent_size = 2

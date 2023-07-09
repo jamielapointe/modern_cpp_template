@@ -1,0 +1,5 @@
+ignore:
+  - "test"
+  - "build"
+  - "fuzz_test"
+  - "benchmark"

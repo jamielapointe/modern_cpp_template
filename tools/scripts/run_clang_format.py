@@ -102,14 +102,14 @@ def make_diff(file: str, original: str, reformatted: str) -> list[str]:
 class DiffError(Exception):
 
     def __init__(self, message: str, errs=None) -> None:
-        super(DiffError, self).__init__(message)
+        super().__init__(message)
         self.errs = errs or []
 
 
 class UnexpectedError(Exception):
 
     def __init__(self, message: str, exc=None) -> None:
-        super(UnexpectedError, self).__init__(message)
+        super().__init__(message)
         self.formatted_traceback = traceback.format_exc()
         self.exc = exc
 
@@ -168,32 +168,31 @@ def run_clang_format_diff(args: argparse.Namespace,
         encoding_py3['encoding'] = 'utf-8'
 
     try:
-        proc = subprocess.Popen(
-            invocation,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True,
-            **encoding_py3)
+        with subprocess.Popen(invocation,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              universal_newlines=True,
+                              **encoding_py3) as proc:
+            proc_stdout = proc.stdout
+            proc_stderr = proc.stderr
+            if sys.version_info[0] < 3:
+                # make the pipes compatible with Python 3,
+                # reading lines should output unicode
+                encoding = 'utf-8'
+                proc_stdout = codecs.getreader(encoding)(proc_stdout)
+                proc_stderr = codecs.getreader(encoding)(proc_stderr)
+            # hopefully the stderr pipe won't get full and block the process
+            outs = list(proc_stdout.readlines())
+            errs = list(proc_stderr.readlines())
+            proc.wait()
+            if proc.returncode:
+                error_string = (
+                    f'Command "{subprocess.list2cmdline(invocation)}" '
+                    f'returned non-zero exit status {proc.returncode}')
+                raise DiffError(error_string, errs)
     except OSError as exc:
         error_string = f'Command "{invocation}" failed to start: {exc}'
         raise DiffError(error_string) from exc
-    proc_stdout = proc.stdout
-    proc_stderr = proc.stderr
-    if sys.version_info[0] < 3:
-        # make the pipes compatible with Python 3,
-        # reading lines should output unicode
-        encoding = 'utf-8'
-        proc_stdout = codecs.getreader(encoding)(proc_stdout)
-        proc_stderr = codecs.getreader(encoding)(proc_stderr)
-    # hopefully the stderr pipe won't get full and block the process
-    outs = list(proc_stdout.readlines())
-    errs = list(proc_stderr.readlines())
-    proc.wait()
-    if proc.returncode:
-        error_string = (
-            f'Command "{subprocess.list2cmdline(invocation)}" '
-            f'returned non-zero exit status {proc.returncode}')
-        raise DiffError(error_string, errs)
     if args.in_place:
         return [], errs
     return make_diff(file, original, outs), errs
@@ -308,6 +307,40 @@ def cli_arguments() -> tuple[argparse.Namespace, argparse.ArgumentParser]:
     return args, parser
 
 
+def run_pool_job(
+    it: Iterator,
+    parser: argparse.ArgumentParser,
+    colored_stderr: bool = False,
+    is_quiet: bool = False,
+    colored_stdout: bool = False,
+) -> None:
+    while True:
+        try:
+            outs, errs = next(it)
+        except StopIteration:
+            break
+        except DiffError as e:
+            print_trouble(parser.prog, str(e), use_colors=colored_stderr)
+            return_code = ExitStatus.TROUBLE
+            sys.stderr.writelines(e.errs)
+        except UnexpectedError as e:
+            print_trouble(parser.prog, str(e), use_colors=colored_stderr)
+            sys.stderr.write(e.formatted_traceback)
+            return_code = ExitStatus.TROUBLE
+            # stop at the first unexpected error,
+            # something could be very wrong,
+            # don't process all files unnecessarily
+            break
+        else:
+            sys.stderr.writelines(errs)
+            if outs == []:
+                continue
+            if not is_quiet:
+                print_diff(outs, use_color=colored_stdout)
+            if return_code == ExitStatus.SUCCESS:
+                return_code = ExitStatus.DIFF
+
+
 def main():
     args, parser = cli_arguments()
 
@@ -367,41 +400,12 @@ def main():
         # execute directly instead of in a pool,
         # less overhead, simpler stacktraces
         it = (run_clang_format_diff_wrapper(args, file) for file in files)
-        pool = None
+        run_pool_job(it, parser, colored_stderr, args.quiet, colored_stdout)
     else:
-        pool = multiprocessing.Pool(number_of_jobs)
-        it = pool.imap_unordered(
-            partial(run_clang_format_diff_wrapper, args), files)
-        pool.close()
-    while True:
-        try:
-            outs, errs = next(it)
-        except StopIteration:
-            break
-        except DiffError as e:
-            print_trouble(parser.prog, str(e), use_colors=colored_stderr)
-            return_code = ExitStatus.TROUBLE
-            sys.stderr.writelines(e.errs)
-        except UnexpectedError as e:
-            print_trouble(parser.prog, str(e), use_colors=colored_stderr)
-            sys.stderr.write(e.formatted_traceback)
-            return_code = ExitStatus.TROUBLE
-            # stop at the first unexpected error,
-            # something could be very wrong,
-            # don't process all files unnecessarily
-            if pool:
-                pool.terminate()
-            break
-        else:
-            sys.stderr.writelines(errs)
-            if outs == []:
-                continue
-            if not args.quiet:
-                print_diff(outs, use_color=colored_stdout)
-            if return_code == ExitStatus.SUCCESS:
-                return_code = ExitStatus.DIFF
-    if pool:
-        pool.join()
+        with multiprocessing.Pool(number_of_jobs) as pool:
+            it = pool.imap_unordered(
+                partial(run_clang_format_diff_wrapper, args), files)
+            run_pool_job(it, parser, colored_stderr, args.quiet, colored_stdout)
     return return_code
 
 

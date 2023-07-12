@@ -16,12 +16,13 @@
 #pragma once
 
 #include <fmt/core.h>
+#include <spdlog/spdlog.h>
 
 #include <cassert>
 #include <cstdint>
 #include <type_traits>
 
-#include "myproject_config.h"
+#include "myproject/system_constants.h"
 
 namespace myproject::internal {
 
@@ -32,12 +33,10 @@ struct assert_handler_impl {
                          uint32_t line, char const* const function,
                          char const* const message) {
     // Print to stderr and abort, as specified in <cassert>.
-    fmt::print(stderr, "Assertion failed at {}:{} in {}: {}\n",
-               file == nullptr ? "<file>" : file, line,
-               function == nullptr ? "<function>" : function, expression);
-    if (message != nullptr && strlen(message) > 0) {
-      fmt::print(stderr, "Error Message: {}\n", message);
-    }
+    spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
+                     file == nullptr ? "<file>" : file, line,
+                     function == nullptr ? "<function>" : function, expression,
+                     message == nullptr ? "" : message);
     std::abort();
   }
 };
@@ -63,9 +62,11 @@ struct assert_handler_impl<
   static inline void run(char const* const expression, char const* const file,
                          uint32_t line, char const* const function,
                          char const* const message) {
-    if (message != nullptr && strlen(message) > 0) {
-      fmt::print(stderr, "Error Message: {}\n", message);
-    }
+    // annoyingly duplicated
+    spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
+                     file == nullptr ? "<file>" : file, line,
+                     function == nullptr ? "<function>" : function, expression,
+                     message == nullptr ? "" : message);
     // GCC requires this call to be dependent on the template parameters.
     __assert_fail(expression, file, line, function,
                   std::declval<EmptyArgs>()...);

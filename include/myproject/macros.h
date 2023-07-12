@@ -115,6 +115,7 @@
 
 ///\internal macro function to run-time error check an expression
 #if !defined(myproject_internal_assert)
-#  define myproject_internal_assert(expression) myproject_internal_assert_message(expression, nullptr); // NOLINT(cppcoreguidelines-macro-usage)
+#  define myproject_internal_assert(expression) myproject_internal_assert_message(expression, nullptr);  // NOLINT(cppcoreguidelines-macro-usage)
 #endif
+
 // clang-format on

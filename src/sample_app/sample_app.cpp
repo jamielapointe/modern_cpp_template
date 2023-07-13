@@ -1,24 +1,81 @@
-#include "myproject/fibonacci.h"
-#include "myproject/undirected_graph.h"
-#include "myproject_config.h"
+#include <spdlog/common.h>
+#include <spdlog/logger.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/stdout_sinks.h>
+#include <spdlog/spdlog.h>
 
-using myproject::algorithms::fibonacci;
-using myproject::algorithms::fibonacci_fast1;
-using myproject::algorithms::fibonacci_fast2;
+#include <CLI/CLI.hpp>
+#include <memory>
+#include <thread>
+
+#include "myproject/fibonacci.h"
+#include "myproject/macros.h"
+#include "myproject/system_constants.h"
 
 namespace myproject::myproject_sample_app {
 
-void run_sample_app() {
-  static constexpr int kFibonacciTooHigh{93};
-  static constexpr int kFibonacciFast1TooHigh{93};
-  fibonacci(kFibonacciTooHigh);
-  fibonacci_fast1(kFibonacciFast1TooHigh);
-  fibonacci_fast2(kFibonacciTooHigh);
+void run_simple_thread(int32_t fibonacci_number) {
+  spdlog::debug("Calling fibonacci with number {}", fibonacci_number);
+  auto result = myproject::algorithms::fibonacci(fibonacci_number);
+  spdlog::info("F_{} = {}", fibonacci_number, result);
+}
+
+void run_sample_app(spdlog::level::level_enum console_log_level,
+                    spdlog::level::level_enum file_log_level,
+                    int32_t fibonacci_number) {
+  // Create a sink to console with default pattern
+  auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+  console_sink->set_level(console_log_level);
+
+  // Create a sing to error logs
+  auto error_console_sink =
+      std::make_shared<spdlog::sinks::stderr_color_sink_mt>();
+  error_console_sink->set_level(spdlog::level::critical);
+
+  // Create a sink to file with custom pattern
+  auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+      "logs/myproject_sample_app.log", true);
+  file_sink->set_level(file_log_level);
+  file_sink->set_pattern("%Y%m%d %R:%S.%F %z [%P] [%t] %n::%l - %v");
+
+  // Set the root custom logger details
+  std::initializer_list<std::shared_ptr<spdlog::sinks::sink>> sinks = {
+      console_sink, file_sink, error_console_sink};
+  auto logger = std::make_shared<spdlog::logger>("myproject_sample_app", sinks);
+  spdlog::set_default_logger(logger);
+  spdlog::set_level(spdlog::level::debug);
+
+  spdlog::info("Application {} Started", myproject::options::kProjectName);
+
+  // Start a thread - it will automatically join on destruction
+  std::jthread t1(run_simple_thread, fibonacci_number);
 }
 
 }  // namespace myproject::myproject_sample_app
 
-int main() {
-  myproject::myproject_sample_app::run_sample_app();
+int main(int argc, char** argv) {
+  CLI::App app{"myproject sample application"};
+
+  app.set_version_flag("--version", myproject::options::kProjectVersion.data());
+
+  spdlog::level::level_enum console_log_level{spdlog::level::level_enum::info};
+  app.add_option("--console_log_level", console_log_level,
+                 "Max log level for the console");
+
+  spdlog::level::level_enum file_log_level{spdlog::level::level_enum::debug};
+  app.add_option("--file_log_level", file_log_level,
+                 "Max log level for the file");
+
+  int32_t fibonacci_number{0};
+  app.add_option("--fibonacci_number", fibonacci_number,
+                 "Enter the fibonacci number to compute")
+      ->required();
+
+  CLI11_PARSE(app, argc, argv);
+
+  myproject::myproject_sample_app::run_sample_app(
+      console_log_level, file_log_level, fibonacci_number);
+
   return 0;
 }

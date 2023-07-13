@@ -1,7 +1,7 @@
 if(TARGET myproject_benchmark)
   target_sources(myproject_benchmark PUBLIC benchmark_main.cpp bm_fibonacci.cpp)
 
-  target_compile_options(myproject_benchmark PRIVATE -fno-exceptions)
+  # target_compile_options(myproject_benchmark PRIVATE -fno-exceptions)
   target_compile_options(myproject_benchmark PRIVATE -Wno-weak-vtables)
   target_compile_options(myproject_benchmark PRIVATE -Wno-global-constructors)
   target_compile_options(myproject_benchmark PRIVATE -Wno-unused-member-function)

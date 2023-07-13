@@ -32,7 +32,7 @@ target_link_system_libraries(
   PRIVATE
   GTest::gtest_main
   fmt::fmt
-  quill::quill
+  spdlog::spdlog
   Microsoft.GSL::GSL)
 
 include(GoogleTest)

@@ -25,17 +25,22 @@ function(myproject_setup_dependencies)
       "FMT_DEBUG_POSTFIX ")
   endif()
 
-  if(NOT TARGET quill::quill)
+  if(NOT TARGET spdlog::spdlog)
     cpmaddpackage(
       NAME
-      quill
+      spdlog
       VERSION
-      3.0.2
+      1.12.0
       GITHUB_REPOSITORY
-      odygrd/quill
+      gabime/spdlog
       OPTIONS
-      "QUILL_FMT_EXTERNAL ON"
-      "QUILL_MASTER_PROJECT OFF")
+      "SPDLOG_FMT_EXTERNAL ON"
+      "SPDLOG_BUILD_EXAMPLE OFF"
+      "SPDLOG_INSTALL OFF"
+      "SPDLOG_SYSTEM_INCLUDES ON")
+  endif()
+  if(spdlog_ADDED)
+    set_property(TARGET spdlog PROPERTY DEBUG_POSTFIX)
   endif()
 
   if(NOT TARGET CLI11::CLI11)

@@ -1,4 +1,4 @@
-# Contributing
+# Contributing {#ContributingLink}
 
 Thanks for considering to write a Pull Request (PR) for myproject! Here are a
 few guidelines to get you started:

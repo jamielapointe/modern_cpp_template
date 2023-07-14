@@ -27,7 +27,8 @@ function(myproject_enable_doxygen DOXYGEN_THEME)
         "${PROJECT_BINARY_DIR}/*"
         "${PROJECT_SOURCE_DIR}/out/*"
         "${PROJECT_SOURCE_DIR}/third_party/*"
-        "${PROJECT_SOURCE_DIR}/tools/*")
+        "${PROJECT_SOURCE_DIR}/tools/*"
+        "${PROJECT_SOURCE_DIR}/node_modules/*")
   endif()
 
   if("${DOXYGEN_THEME}" STREQUAL "")

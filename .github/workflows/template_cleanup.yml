@@ -2,7 +2,7 @@
 # This will rename all references of the template name to the project name
 # This will remove whatever is not needed
 
-name: Template Cleanup
+name: Template_Cleanup
 on:
   pull_request:
   release:
@@ -18,9 +18,10 @@ env:
   TEMPLATES_PATH: ".github/template"
 
 jobs:
-  template-cleanup:
+  TemplateCleanup:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         compiler:
           - g++-12
@@ -37,9 +38,10 @@ jobs:
 
       - name: Install Tools
         run: |
-          sudo apt-get install -y gcc-12 g++-12 ninja-build doxygen graphviz texlive-latex-extra libpfm4 ghostscript cmake ccache cppcheck gcovr
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
 
       - name: Setup Cache
         uses: ./.github/actions/setup_cache

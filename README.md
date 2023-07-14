@@ -76,20 +76,20 @@ This template:
   - [C++ Core Guidelines][]
   - [SEI CERT C++ Coding Standard][]
 - Enables Address, Undefined Behavior, and Leak sanitizers whenever possible
-- Utilizes [CPM] for dependency management in CMake
+- Utilizes [CPM][] for dependency management in CMake
 - Utilizes [Google Test][] and [Google Benchmark][]
 - Utilizes [fmt][] for formatted printing
 - Utilizes [spdlog][] for logging
-- Utilizes [GSL: Guidelines Support Library] for helping to adhere to the
+- Utilizes [GSL: Guidelines Support Library][] for helping to adhere to the
 - [C++ Core Guidelines][]
-- Utilizes [Abseil] helping to adhere to the [Google C++ styleguide][]
-- Utilizes [CLI11] command line utility
+- Utilizes [Abseil][] helping to adhere to the [Google C++ styleguide][]
+- Utilizes [CLI11][] command line utility
 - Runs code coverage over the unit tests
-- Provides a simple [CLI11] example
-- Locally we utilize [pre-commit] to helping ensure adherence to a common
-  styleguide as mentioned in the [contributing](./.github/CONTRIBUTING.md)
+- Provides a simple [CLI11][] example
+- Locally we utilize [pre-commit][] to helping ensure adherence to a common
+  styleguide as mentioned in the [contributing](.github/CONTRIBUTING)
   notes.
-- Makes use of [clang-format], [clang-tidy], [cppcheck], [codeql], and [codacy].
+- Makes use of [clang-format][], [clang-tidy][], [cppcheck][], [codeql][], and [codacy][].
 
 ## Getting Started
 
@@ -473,7 +473,7 @@ GUI projects in this container.
 
 To contribute, open an [issue][github issues] or [pull
 request][github pull requests] on GitHub, or ask a question on [gitter][]. There
-is also a short note to contributors [here](./.github/CONTRIBUTING.md).
+is also a short note to contributors [here](./.github/CONTRIBUTING).
 
 This project was created by [Jamie LaPointe](https://github.com/jamielapointe).
 Special thanks to all the contributors

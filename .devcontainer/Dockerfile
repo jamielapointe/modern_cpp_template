@@ -9,10 +9,20 @@ ARG VARIANT
 RUN apt-get update -qq \
   export DEBIAN_FRONTEND=noninteractive \
   apt-get install -y --no-install-recommends \
-  software-properties-common wget apt-utils file zip \
-  openssh-client gpg-agent socat rsync \
-  make ninja-build git \
-  python3 python3-pip \
+  software-properties-common=0.99.22.7 \
+  wget=1.21.2-2ubuntu1 \
+  apt-utils=2.4.9 \
+  file=1:5.41-3 \
+  zip=3.0-12build2 \
+  openssh-client=1:8.9p1-3ubuntu0.1 \
+  gpg-agent=2.2.27-3ubuntu2.1 \
+  socat=1.7.4.1-3ubuntu4 \
+  rsync=3.2.7-0ubuntu0.22.04.2 \
+  make=4.3-4.1build1 \
+  ninja-build=1.10.1-1 \
+  git=1:2.34.1-1ubuntu1.9 \
+  python3=3.10.6-1~22.04 \
+  python3-pip=22.0.2+dfsg-1ubuntu0.3 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

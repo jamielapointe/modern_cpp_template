@@ -1,0 +1,36 @@
+# Handle the creation of a project based on this template
+# This will rename all references of the template name to the project name
+# This will remove whatever is not needed
+
+name: Template Cleanup
+
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+permissions:
+  contents: write
+
+env:
+  TEMPLATES_PATH: ".github/template"
+
+jobs:
+  template-cleanup:
+    name: Cleanup after create
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler:
+          - g++-12
+        generator:
+          - "Ninja"
+        build_type:
+          - "Release"
+        include:
+          - compiler: g++-12
+            ccompiler: gcc-12
+# TODO add more and test

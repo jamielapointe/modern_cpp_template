@@ -71,3 +71,6 @@ Thumbs.db
 *.html
 Testing/
 *.profraw
+node_modules/
+yarn.lock
+package.json

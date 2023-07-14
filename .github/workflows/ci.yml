@@ -150,6 +150,12 @@ jobs:
           # llvm-cov-16 show ./myproject_tests -instr-profile=myproject_tests.profdata
           # More info: https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
 
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./build/test/coverage.json
+
       - name: GCC Test and coverage
         if: ${{matrix.compiler == 'g++-12' && matrix.build_type == 'Debug'}}
         working-directory: ./build/test

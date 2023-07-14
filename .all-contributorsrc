@@ -1,0 +1,31 @@
+{
+  "projectName": "myproject",
+  "projectOwner": "Jamie LaPointe",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "atom",
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "commitType": "docs",
+  "contributors": [
+    {
+      "login": "jlapointe",
+      "name": "jlapointe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1143284?v=4",
+      "profile": "https://github.com/jlapointe",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "design",
+        "platform",
+        "tool"
+      ]
+    }
+  ]
+}

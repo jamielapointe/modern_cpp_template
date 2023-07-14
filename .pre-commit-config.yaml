@@ -37,12 +37,13 @@ repos:
       - id: cmake-format
         additional_dependencies: [pyyaml]
 
+  # This version is using alpha because that this the latest version supported by VSCode prettier extension
+  # We will use v3.0.0 when the extension is updated
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.0.0"
+    rev: "v3.0.0-alpha.6"
     hooks:
       - id: prettier
         types_or: [yaml, html, css, scss, javascript, json]
-        args: [--prose-wrap=always]
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.8.1

@@ -475,7 +475,7 @@ To contribute, open an [issue][github issues] or [pull
 request][github pull requests] on GitHub, or ask a question on [gitter][]. There
 is also a short note to contributors [here](.github/CONTRIBUTING).
 
-The list of contributors to the project can be found [here](.github/CONTRIBUTORS).
+The list of contributors to the project can be found [here](.github/CONTRIBUTORS.html).
 
 ## License
 

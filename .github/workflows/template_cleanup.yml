@@ -3,7 +3,6 @@
 # This will remove whatever is not needed
 
 name: Template Cleanup
-
 on:
   pull_request:
   release:
@@ -20,7 +19,6 @@ env:
 
 jobs:
   template-cleanup:
-    name: Cleanup after create
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,4 +31,19 @@ jobs:
         include:
           - compiler: g++-12
             ccompiler: gcc-12
-# TODO add more and test
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          sudo apt-get install -y gcc-12 g++-12 ninja-build doxygen graphviz texlive-latex-extra libpfm4 ghostscript cmake ccache cppcheck gcovr
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}

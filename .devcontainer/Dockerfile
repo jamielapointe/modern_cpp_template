@@ -6,12 +6,25 @@ FROM ubuntu:${VARIANT}
 ARG VARIANT
 
 # Install necessary packages available from standard repos
-RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
-  apt-get install -y --no-install-recommends \
-  software-properties-common wget apt-utils file zip \
-  openssh-client gpg-agent socat rsync \
-  make ninja-build git \
-  python3 python3-pip
+RUN apt-get update -qq
+RUN export DEBIAN_FRONTEND=noninteractive
+RUN apt-get install --yes --quiet --no-install-recommends \
+  software-properties-common=0.99.22.7 \
+  wget=1.21.2-2ubuntu1 \
+  apt-utils=2.4.9 \
+  file=1:5.41-3 \
+  zip=3.0-12build2 \
+  openssh-client=1:8.9p1-3ubuntu0.1 \
+  gpg-agent=2.2.27-3ubuntu2.1 \
+  socat=1.7.4.1-3ubuntu4 \
+  rsync=3.2.7-0ubuntu0.22.04.2 \
+  make=4.3-4.1build1 \
+  ninja-build=1.10.1-1 \
+  git=1:2.34.1-1ubuntu1.9 \
+  python3=3.10.6-1~22.04 \
+  python3-pip=22.0.2+dfsg-1ubuntu0.3 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
 RUN python3 -m pip install --upgrade pip setuptools
@@ -40,11 +53,13 @@ ARG GCC_VER="12"
 RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
   apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
   apt-get install -y --no-install-recommends \
-  gcc-${GCC_VER} g++-${GCC_VER} gdb
+  gcc-${GCC_VER} g++-${GCC_VER} gdb \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Set gcc-${GCC_VER} as default gcc
-RUN update-alternatives --install /usr/bin/gcc gcc $(which gcc-${GCC_VER}) 100
-RUN update-alternatives --install /usr/bin/g++ g++ $(which g++-${GCC_VER}) 100
+RUN update-alternatives --install /usr/bin/gcc gcc "$(which gcc-${GCC_VER})" 100
+RUN update-alternatives --install /usr/bin/g++ g++ "$(which g++-${GCC_VER})" 100
 
 ARG LLVM_VER="16"
 # Add clang-${LLVM_VER}
@@ -55,14 +70,16 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - 2>/dev/
   apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
   apt-get install -y --no-install-recommends \
   clang-${LLVM_VER} lldb-${LLVM_VER} lld-${LLVM_VER} clangd-${LLVM_VER} \
-  llvm-${LLVM_VER}-dev libclang-${LLVM_VER}-dev clang-tidy-${LLVM_VER}
+  llvm-${LLVM_VER}-dev libclang-${LLVM_VER}-dev clang-tidy-${LLVM_VER} \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Set the default clang-tidy, so CMake can find it
-RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy $(which clang-tidy-${LLVM_VER}) 1
+RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy "$(which clang-tidy-${LLVM_VER})" 1
 
 # Set clang-${LLVM_VER} as default clang
-RUN update-alternatives --install /usr/bin/clang clang $(which clang-${LLVM_VER}) 100
-RUN update-alternatives --install /usr/bin/clang++ clang++ $(which clang++-${LLVM_VER}) 100
+RUN update-alternatives --install /usr/bin/clang clang "$(which clang-${LLVM_VER})" 100
+RUN update-alternatives --install /usr/bin/clang++ clang++ "$(which clang++-${LLVM_VER})" 100
 
 # Add current cmake/ccmake, from Kitware
 ARG CMAKE_URL="https://apt.kitware.com/ubuntu/"
@@ -71,17 +88,23 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
   | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
   apt-add-repository -y "deb ${CMAKE_URL} ${CMAKE_PKG} main" && \
   apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
-  apt-get install -y --no-install-recommends cmake cmake-curses-gui
+  apt-get install -y --no-install-recommends cmake cmake-curses-gui \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install editors
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
   apt-get install -y --no-install-recommends \
-  neovim emacs nano
+  neovim emacs nano \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install optional dependencies
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
   apt-get install -y --no-install-recommends \
-  doxygen graphviz ccache cppcheck
+  doxygen graphviz ccache cppcheck \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install include-what-you-use
 ENV IWYU /home/iwyu
@@ -101,9 +124,9 @@ RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${IWYU_SRC} \
 # `You need to copy the Clang include directory to the expected location before
 #  running (similarly, use include-what-you-use -print-resource-dir to learn
 #  exactly where IWYU wants the headers).`
-RUN mkdir -p $(include-what-you-use -print-resource-dir 2>/dev/null)
-RUN ln -s $(readlink -f /usr/lib/clang/${LLVM_VER}/include) \
-  $(include-what-you-use -print-resource-dir 2>/dev/null)/include
+RUN mkdir -p "$(include-what-you-use -print-resource-dir 2>/dev/null)"
+RUN ln -s "$(readlink -f /usr/lib/clang/${LLVM_VER}/include)" \
+  "$(include-what-you-use -print-resource-dir 2>/dev/null)/include"
 
 ## Cleanup cached apt data we don't need anymore
 RUN apt-get autoremove -y && apt-get clean && \

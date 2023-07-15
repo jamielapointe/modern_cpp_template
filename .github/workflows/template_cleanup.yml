@@ -1,0 +1,51 @@
+# Handle the creation of a project based on this template
+# This will rename all references of the template name to the project name
+# This will remove whatever is not needed
+
+name: Template_Cleanup
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+permissions:
+  contents: write
+
+env:
+  TEMPLATES_PATH: ".github/template"
+
+jobs:
+  TemplateCleanup:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - g++-12
+        generator:
+          - "Ninja"
+        build_type:
+          - "Release"
+        include:
+          - compiler: g++-12
+            ccompiler: gcc-12
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}

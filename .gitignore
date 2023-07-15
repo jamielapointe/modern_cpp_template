@@ -69,5 +69,9 @@ Thumbs.db
 
 # other generated files
 *.html
+!.github/CONTRIBUTORS.html
 Testing/
 *.profraw
+node_modules/
+yarn.lock
+package.json

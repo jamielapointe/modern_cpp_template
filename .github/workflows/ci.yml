@@ -37,7 +37,9 @@ jobs:
         run: pip install -r tools/requirements-dev.txt
 
       - name: Verify C++ code adheres to style guide
-        run: python tools/scripts/run_clang_format.py -r --clang-format-executable clang-format-16
+        run:
+          python tools/scripts/run_clang_format.py -r --clang-format-executable
+          clang-format-16
 
   # To many things about building and testing are a bit OS depdenent, so create seperate jobs for each OS
   LinuxTests:
@@ -146,6 +148,8 @@ jobs:
           llvm-profdata-16 merge -sparse default.profraw -o myproject_tests.profdata
           llvm-cov-16 report ./myproject_tests -instr-profile=myproject_tests.profdata
           llvm-cov-16 export ./myproject_tests -instr-profile=myproject_tests.profdata > coverage.json
+          llvm-cov-16 export ./myproject_tests -instr-profile=myproject_tests.profdata -format=lcov > coverage.lcov
+          llvm-cov-16 show ./myproject_tests -instr-profile=myproject_tests.profdata > coverage_show.txt
           # Note that for a detailed report run:
           # llvm-cov-16 show ./myproject_tests -instr-profile=myproject_tests.profdata
           # More info: https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
@@ -156,6 +160,24 @@ jobs:
         run: |
           ./myproject_tests
           gcovr -j --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov-12'
+
+      - name: Publish to codecov
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ runner.os }}
+          name: ${{ runner.os }}-coverage
+          verbose: true
+          fail_ci_if_error: true
+          files: ./build/test/coverage_show.txt
+
+      - name: Run codacy-coverage-reporter
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./build/test/coverage.lcov
 
       - name: CMake Tests
         working-directory: ./build
@@ -170,18 +192,9 @@ jobs:
 
       - name: Publish Tagged Release
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator != '' }}
+        if:
+          ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator
+          != '' }}
         with:
           files: |
             build/*-*${{ matrix.build_type }}*-*.*
-
-      - name: Publish to codecov
-        if: ${{matrix.build_type == 'Debug'}}
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ runner.os }}
-          name: ${{ runner.os }}-coverage
-          verbose: true
-          fail_ci_if_error: true
-          files: ./build/test/coverage.xml,./build/test/coverage.json

@@ -6,9 +6,9 @@ FROM ubuntu:${VARIANT}
 ARG VARIANT
 
 # Install necessary packages available from standard repos
-RUN apt-get update -qq \
-  export DEBIAN_FRONTEND=noninteractive \
-  apt-get install -y --no-install-recommends \
+RUN apt-get update -qq
+RUN export DEBIAN_FRONTEND=noninteractive
+RUN apt-get install --yes --quiet \
   software-properties-common=0.99.22.7 \
   wget=1.21.2-2ubuntu1 \
   apt-utils=2.4.9 \

@@ -8,7 +8,7 @@ ARG VARIANT
 # Install necessary packages available from standard repos
 RUN apt-get update -qq
 RUN export DEBIAN_FRONTEND=noninteractive
-RUN apt-get install --yes --quiet \
+RUN apt-get install --yes --quiet --no-install-recommends \
   software-properties-common=0.99.22.7 \
   wget=1.21.2-2ubuntu1 \
   apt-utils=2.4.9 \

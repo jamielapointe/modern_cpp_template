@@ -1,11 +1,11 @@
-///@file macros.h
-///@author Jamie LaPointe (jamie.lapointe@gmail.com)
-///@brief Provides macros and other preprocessor directives to the rest of the
+///\file macros.h
+///\author Jamie LaPointe (jamie.lapointe@gmail.com)
+///\brief Provides macros and other preprocessor directives to the rest of the
 /// project
-///@version 0.1
-///@date 2023-07-05
+///\version 0.1
+///\date 2023-07-05
 ///
-///@copyright Copyright (c) 2023
+///\copyright Copyright (c) 2023
 ///
 
 // this uses macros... yuck.  Until I discover a better way of doing this

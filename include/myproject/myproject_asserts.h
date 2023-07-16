@@ -1,11 +1,11 @@
-///@file myproject_asserts.h
-///@author Jamie LaPointe (jamie.lapointe@gmail.com)
-///@brief Provide some project level asserts
+///\file myproject_asserts.h
+///\author Jamie LaPointe (jamie.lapointe@gmail.com)
+///\brief Provide some project level asserts
 /// these asserts can be can be configured at compiled for certain behaviours
-///@version 0.1
-///@date 2023-07-02
+///\version 0.1
+///\date 2023-07-02
 ///
-///@copyright Copyright (c) 2023
+///\copyright Copyright (c) 2023
 ///
 
 // TODO(jlapointe) Perhaps provide some compile time options for handling and/or

@@ -1,0 +1,3 @@
+# ignore custom header/footer doxygen HTML
+docs/doxygen_custom/custom_footer.html
+docs/doxygen_custom/custom_header.html

@@ -1,11 +1,11 @@
-///@file compiler_macros.h
-///@author Jamie LaPointe (jamie.lapointe@gmail.com)
-///@brief Set a bunch of macros based on compiler in use
-///@version 0.1
-///@date 2023-07-05
+///\file compiler_macros.h
+///\author Jamie LaPointe (jamie.lapointe@gmail.com)
+///\brief Set a bunch of macros based on compiler in use
+///\version 0.1
+///\date 2023-07-05
 /// This is heavily "borrowed" from Eigen:
 /// https://eigen.tuxfamily.org/index.php?title=Main_Page
-///@copyright Copyright (c) 2023
+///\copyright Copyright (c) 2023
 ///
 
 #pragma once

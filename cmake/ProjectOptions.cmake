@@ -41,7 +41,9 @@ macro(myproject_setup_options)
 
   myproject_supports_sanitizers()
 
-  find_package(Doxygen OPTIONAL_COMPONENTS dot)
+  # adjust as needed; pretty sure we need 1.9.7 to get the MathJax3 and chtml support
+  # not sure about an upper limit...
+  find_package(Doxygen 1.9.7...<2.0 OPTIONAL_COMPONENTS dot)
   if(Doxygen_FOUND)
     set(DEFAULT_DOXYGEN ON)
   else()
@@ -67,9 +69,10 @@ macro(myproject_setup_options)
     option(myproject_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
     option(myproject_ENABLE_INTERNAL_DEBUGGING "Enable internal debugging - this is for testintg this project only" OFF)
     option(myproject_ENABLE_SIMD "Enable SIMD optimizations" OFF)
+    option(myproject_ENABLE_DOXYGEN_WITH_CLANG "You have a version of doxygen that does supports clang" OFF)
     option(
       myproject_ENABLE_NATIVE_ARCHITECTURE
-      "Enable native architecture optimizations - warning may break if run on older hardware arhcitecutres or cross compiling!"
+      "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
       OFF)
   else()
     option(myproject_BUILD_DOCUMENTATION "Generate Doxygen documentation" ${DEFAULT_DOXYGEN})
@@ -92,7 +95,11 @@ macro(myproject_setup_options)
     option(myproject_ENABLE_SIMD "Enable SIMD optimizations" OFF)
     option(
       myproject_ENABLE_NATIVE_ARCHITECTURE
-      "Enable native architecture optimizations - warning may break if run on older hardware arhcitecutres or cross compiling!"
+      "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
+      OFF)
+    option(
+      myproject_ENABLE_DOXYGEN_WITH_CLANG
+      "Enable if you have a version of doxygen that was linked with the clang 16.0+ library; this is useful for getting better parsing of C++ code"
       OFF)
   endif()
 
@@ -114,7 +121,8 @@ macro(myproject_setup_options)
       myproject_ENABLE_SAMPLE_BASED_PROFILING
       myproject_ENABLE_INSTRUMENTED_PROFILING
       myproject_ENABLE_SIMD
-      myproject_ENABLE_NATIVE_ARCHITECTURE)
+      myproject_ENABLE_NATIVE_ARCHITECTURE
+      myproject_ENABLE_DOXYGEN_WITH_CLANG)
   endif()
 
   myproject_check_libfuzzer_support(LIBFUZZER_SUPPORTED)

@@ -45,6 +45,15 @@ ENV CONAN_SYSREQUIRES_SUDO 0
 # leaving this flag undefined can cause some installation failures.
 ENV CONAN_SYSREQUIRES_MODE enabled
 
+# Install doxygen
+RUN wget https://www.doxygen.nl/files/doxygen-1.9.7.linux.bin.tar.gz \
+  mkdir -p "${HOME}/.local/bin" \
+  tar -xC "${HOME}/.local/bin" -f doxygen-1.9.7.linux.bin.tar.gz \
+  rm doxygen-1.9.7.linux.bin.tar.gz \
+  echo "export PATH=\"${HOME}/.local/bin/doxygen-1.9.7/bin:${PATH}\"" >> "${HOME}/.bashrc" \
+  export PATH="${HOME}/.local/bin/doxygen-1.9.7/bin:${PATH}" \
+  doxygen -v
+
 # User-settable versions:
 # This Dockerfile should support gcc-[12] and clang-[15, 16, 17]
 # Earlier versions of clang will require significant modifications to the IWYU section

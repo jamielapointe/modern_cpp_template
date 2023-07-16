@@ -21,7 +21,7 @@ RUN apt-get install --yes --quiet --no-install-recommends \
   make=4.3-4.1build1 \
   ninja-build=1.10.1-1 \
   git=1:2.34.1-1ubuntu1.9 \
-  python3=3.10.6-1${HOME}22.04 \
+  python3=3.10.6-1~22.04 \
   python3-pip=22.0.2+dfsg-1ubuntu0.3 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*

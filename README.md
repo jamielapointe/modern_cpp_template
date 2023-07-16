@@ -15,7 +15,7 @@ modern C++ quickly.
 
 ## Table of Contents
 
-- [modern_cpp_template: A CMake based template for C++20 development](#modern_cpp_template-a-cmake-based-template-for-c20-development)
+- [modern\_cpp\_template: A CMake based template for C++20 development](#modern_cpp_template-a-cmake-based-template-for-c20-development)
   - [Table of Contents](#table-of-contents)
   - [Background](#background)
     - [Introduction](#introduction)
@@ -45,9 +45,8 @@ modern C++ quickly.
 
 ### Introduction
 
-This is a fork of
-[cpp-best-practices/cmake_template](https://github.com/cpp-best-practices/cmake_template)
-mostly to be used for my own personal projects.
+This is a fork of [cpp-best-practices/cmake_template][] mostly to be used for my
+own personal projects.
 
 This template project uses C++20 and currently supports recent compilers:
 
@@ -481,17 +480,19 @@ domain. See the [LICENSE](./LICENSE) file for details.
 This project follows the [all-contributors][] specification. Contributions of
 any kind welcome!
 
+[cpp-best-practices/cmake_template]:
+  https://github.com/cpp-best-practices/cmake_template
 [ci-badge]:
-  https://github.com/cpp-best-practices/cmake_template/actions/workflows/ci.yml/badge.svg
+  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/ci.yml/badge.svg
 [ci]:
-  https://github.com/cpp-best-practices/cmake_template/actions/workflows/ci.yml
+  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/ci.yml
 [codecov-badge]:
   https://codecov.io/gh/jamielapointe/modern_cpp_template/branch/main/graph/badge.svg?token=6REP7VM7DP
 [codecov]: https://codecov.io/gh/jamielapointe/modern_cpp_template
 [codeql-badge]:
-  https://github.com/cpp-best-practices/cmake_template/actions/workflows/codeql-analysis.yml/badge.svg
+  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql_analysis.yml/badge.svg
 [codeql]:
-  https://github.com/cpp-best-practices/cmake_template/actions/workflows/codeql-analysis.yml
+  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql_analysis.yml
 [codacy-badge]:
   https://app.codacy.com/project/badge/Grade/a709a287b12249c3a4a57165f3306411
 [codacy]:

@@ -1,15 +1,17 @@
-///@file binary_exponentiation.h
-///@author Jamie LaPointe (jamie.lapointe@gmail.com)
-///@brief Binary exponentiation is a trick which allows you to calculate
-///\f$a^n\f$ using only \f$\mathcal{O}\left(\log{}n\right)\f$ multiplications
+///\file binary_exponentiation.h
+///\author Jamie LaPointe (jamie.lapointe@gmail.com)
+///\brief Binary exponentiation is a trick which allows you to calculate
+///
+/// \f$a^n\f$ using only \f$\mathcal{O}\left(\log{}n\right)\f$ multiplications
 /// instead of \f$\mathcal{O}\left(n\right)\f$ multiplications required by the
 /// naive approach.  This is also known as exponentiation by squaring.
 ///
 /// More information: https://cp-algorithms.com/algebra/binary-exp.html
-///@version 0.1
-///@date 2023-07-01
 ///
-///@copyright Copyright (c) 2023
+///\version 0.1
+///\date 2023-07-01
+///
+///\copyright Copyright (c) 2023
 ///
 
 #pragma once
@@ -17,14 +19,17 @@
 #include <array>
 #include <cstdint>
 
+///\brief the myproject::algorithms namespace
+/// This is the namespace for all algorithms in the myproject library
+/// Many of which are just inline functions
 namespace myproject::algorithms {
 
-///@brief binary exponentiation
-/// Compute \f$x^n mod m\f$
-///@param base is the base variable \f$x\f$
-///@param exponent is the exponent variable \f$n\f$
-///@param modulus is the modulus variable \f$m\f$
-///@return the result of the computation as an int64_t
+///\brief binary exponentiation
+/// Compute \f$x^n \mod m\f$
+///\param base is the base variable \f$x\f$
+///\param exponent is the exponent variable \f$n\f$
+///\param modulus is the modulus variable \f$m\f$
+///\return the result of the computation as an int64_t
 inline int64_t binary_exponentiation(int64_t base, int64_t exponent,
                                      int64_t modulus) {
   base %= modulus;
@@ -40,13 +45,13 @@ inline int64_t binary_exponentiation(int64_t base, int64_t exponent,
   return result;
 }
 
-///@brief matrix exponentiation
+///\brief matrix exponentiation
 /// Compute \f$X^n\f$ where X is a matrix and n is an integer
-///@tparam Mat The Matrix Type that supports \c identity function and
+///\tparam Mat The Matrix Type that supports \c identity function and
 /// \c operator*
-///@param base is the Matrix base variable \f$x\f$
-///@param exponent is the integer exponent variable \f$n\f$
-///@return the result of the computation as a Matrix
+///\param base is the Matrix base variable \f$x\f$
+///\param exponent is the integer exponent variable \f$n\f$
+///\return the result of the computation as a Matrix
 template <typename Mat>
 inline Mat matrix_exponentiation(Mat base, int64_t exponent) {
   Mat answer = Mat::identity();

@@ -63,7 +63,7 @@ OS with a recent compiler supporting C++ 20.
 
 Optional dependencies:
 
-- doxygen >= 1.9.1
+- doxygen >= 1.9.7
 - ccache >= 4.5.1
 - cppcheck >= 2.7
 - pfm (performance monitoring events library) >= 4.11.1
@@ -87,9 +87,10 @@ This template:
 - Runs code coverage over the unit tests
 - Provides a simple [CLI11][] example
 - Locally we utilize [pre-commit][] to helping ensure adherence to a common
-  styleguide as mentioned in the [contributing](.github/CONTRIBUTING)
+  styleguide as mentioned in the [contributing](./.github/CONTRIBUTING.md)
   notes.
-- Makes use of [clang-format][], [clang-tidy][], [cppcheck][], [codeql][], and [codacy][].
+- Makes use of [clang-format][], [clang-tidy][], [cppcheck][], [codeql][], and
+  [codacy][].
 
 ## Getting Started
 
@@ -105,9 +106,8 @@ setting up your project and committed the changes.
 
 Note about install commands:
 
-- for Windows, we use [choco](https://chocolatey.org/install) or just download
-  the installer and install.
-- for MacOS, we use [brew](https://brew.sh/).
+- for Windows, we use [choco][] or just download the installer and install.
+- for MacOS, we use [brew][].
 - In case of an error in cmake, make sure that the dependencies are on the PATH.
 
 ### Too Long, Didn't Install
@@ -123,10 +123,10 @@ We have a Docker image that's already set up for you. See the
 
 #### Necessary Dependencies
 
-1. A C++ compiler that supports nearly all of C++17 and most of C++20. See
-   [cppreference.com](https://en.cppreference.com/w/cpp/compiler_support) to see
-   which features are supported by each compiler. The following compilers should
-   work:
+1. A C++ compiler that supports nearly all of C++17 and most of C++20.
+
+   - See [C++ Reference][] to see which features are supported by each compiler.
+     The following compilers should work:
 
    - [gcc 12+](https://gcc.gnu.org/) Install command
 
@@ -161,13 +161,12 @@ We have a Docker image that's already set up for you. See the
        brew install llvm
        ```
 
-   - [Visual Studio 2022 or higher](https://visualstudio.microsoft.com/) Install
-     command + Environment setup
+   - [Visual Studio 2022 or higher][] Install command + Environment setup
 
      On Windows, you need to install Visual Studio 2019 because of the SDK and
      libraries that ship with it.
 
-2. [CMake 3.25+](https://cmake.org/) Install Command
+2. [CMake 3.25+][] Install Command
 
    - Debian/Ubuntu:
 
@@ -175,8 +174,7 @@ We have a Docker image that's already set up for you. See the
      sudo apt-get install cmake
      ```
 
-   - Windows: Download latest version of CMake and install:
-     [CMake](https://cmake.org/download/)
+   - Windows: Download latest version of CMake and install: [CMake Download][]
    - MacOS:
 
      ```bash
@@ -187,7 +185,7 @@ We have a Docker image that's already set up for you. See the
 
 ##### C++ Tools
 
-- [Doxygen](http://doxygen.nl/) Install Command
+- [Doxygen][] Install Command
 
   - Debian/Ubuntu:
 
@@ -197,7 +195,8 @@ We have a Docker image that's already set up for you. See the
     ```
 
   - Windows: Download latest version of Doxygen and install:
-    [Doxygen](https://www.doxygen.nl/download.html)
+
+    - [Doxygen Download][]
 
   - MacOS:
 
@@ -206,7 +205,7 @@ We have a Docker image that's already set up for you. See the
     brew install graphviz
     ```
 
-- [ccache](https://ccache.dev) Install Command
+- [ccache][] Install Command
 
   - Debian/Ubuntu:
 
@@ -214,8 +213,7 @@ We have a Docker image that's already set up for you. See the
     sudo apt-get install ccache
     ```
 
-  - Windows: Download latest version of ccache and install:
-    [Cache](https://ccache.dev/download.html)
+  - Windows: Download latest version of ccache and install: [ccache download][]
 
   - MacOS:
 
@@ -223,7 +221,7 @@ We have a Docker image that's already set up for you. See the
     brew install ccache
     ```
 
-- [Cppcheck](http://cppcheck.sourceforge.net/) Install Command
+- [cppcheck][] Install Command
 
   - Debian/Ubuntu:
 
@@ -231,8 +229,7 @@ We have a Docker image that's already set up for you. See the
     sudo apt-get install cppcheck
     ```
 
-  - Windows: Download latest version and install:
-    [Cppcheck](https://cppcheck.sourceforge.io/)
+  - Windows: Download latest version and install: [cppcheck][]
 
   - MacOS:
 
@@ -240,10 +237,9 @@ We have a Docker image that's already set up for you. See the
     brew install cppcheck
     ```
 
-- [include-what-you-use](https://include-what-you-use.org/) Install Command
+- [include-what-you-use][] Install Command
 
-  Follow instructions here:
-  [install: include what you use](https://github.com/include-what-you-use/include-what-you-use#how-to-install)
+  Follow instructions here: [install: include what you use][]
 
 ## Build Instructions
 
@@ -347,7 +343,7 @@ cmake-gui .
 
 2.c.2) Set the build directory:
 
-![build_dir](https://user-images.githubusercontent.com/16418197/82524586-fa48e380-9af4-11ea-8514-4e18a063d8eb.jpg)
+![build_dir][]
 
 2.c.3) Configure the generator:
 
@@ -367,11 +363,11 @@ Choose "Visual Studio 17 2022" as the generator. To tell Visual studio to use
 - If you use the LLVM that is shipped with Visual Studio: write `ClangCl` under
   "optional toolset to use".
 
-![visual_studio](https://user-images.githubusercontent.com/16418197/82781142-ae60ac00-9e1e-11ea-8c77-222b005a8f7e.png)
+![visual_studio][]
 
 2.c.4) Choose the Cmake options and then generate:
 
-![generate](https://user-images.githubusercontent.com/16418197/82781591-c97feb80-9e1f-11ea-86c8-f2748b96f516.png)
+![generate][]
 
 #### (3) Build the project
 
@@ -401,8 +397,8 @@ cd ../
 
 ## Docker Instructions
 
-If you have [Docker](https://www.docker.com/) installed, you can run this in
-your terminal, when the Dockerfile is inside the `.devcontainer` directory:
+If you have [Docker][] installed, you can run this in your terminal, when the
+Dockerfile is inside the `.devcontainer` directory:
 
 ```bash
 docker build -f ./.devcontainer/Dockerfile --tag=my_project:latest .
@@ -433,8 +429,7 @@ You will be logged in as root, so you will see the `#` symbol as your prompt.
 You will be in a directory that contains a copy of the `cpp_starter_project`;
 any changes you make to your local copy will not be updated in the Docker image
 until you rebuild it. If you need to mount your local copy directly in the
-Docker image, see
-[Docker volumes docs](https://docs.docker.com/storage/volumes/). TLDR:
+Docker image, see [Docker volumes docs][]. TLDR:
 
 ```bash
 docker run -it \
@@ -473,36 +468,46 @@ GUI projects in this container.
 
 To contribute, open an [issue][github issues] or [pull
 request][github pull requests] on GitHub, or ask a question on [gitter][]. There
-is also a short note to contributors [here](.github/CONTRIBUTING).
+is also a short note to contributors [here](./.github/CONTRIBUTING.md).
 
-The list of contributors to the project can be found [here](.github/CONTRIBUTORS.html).
+The list of contributors to the project can be found
+[here](./.github/CONTRIBUTORS.md).
 
 ## License
 
 This template is available as free and unencumbered software into the pubic
 domain. See the [LICENSE](./LICENSE) file for details.
 
-This project follows the
-[all-contributors](https://github.com/all-contributors/all-contributors)
-specification. Contributions of any kind welcome!
+This project follows the [all-contributors][] specification. Contributions of
+any kind welcome!
 
-[ci-badge]: https://github.com/cpp-best-practices/cmake_template/actions/workflows/ci.yml/badge.svg
-[ci]: https://github.com/cpp-best-practices/cmake_template/actions/workflows/ci.yml
-[codecov-badge]: https://codecov.io/gh/jamielapointe/modern_cpp_template/branch/main/graph/badge.svg?token=6REP7VM7DP
+[ci-badge]:
+  https://github.com/cpp-best-practices/cmake_template/actions/workflows/ci.yml/badge.svg
+[ci]:
+  https://github.com/cpp-best-practices/cmake_template/actions/workflows/ci.yml
+[codecov-badge]:
+  https://codecov.io/gh/jamielapointe/modern_cpp_template/branch/main/graph/badge.svg?token=6REP7VM7DP
 [codecov]: https://codecov.io/gh/jamielapointe/modern_cpp_template
-[codeql-badge]: https://github.com/cpp-best-practices/cmake_template/actions/workflows/codeql-analysis.yml/badge.svg
-[codeql]: https://github.com/cpp-best-practices/cmake_template/actions/workflows/codeql-analysis.yml
-[codacy-badge]: https://app.codacy.com/project/badge/Grade/a709a287b12249c3a4a57165f3306411
-[codacy]: https://app.codacy.com/gh/jamielapointe/modern_cpp_template/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
+[codeql-badge]:
+  https://github.com/cpp-best-practices/cmake_template/actions/workflows/codeql-analysis.yml/badge.svg
+[codeql]:
+  https://github.com/cpp-best-practices/cmake_template/actions/workflows/codeql-analysis.yml
+[codacy-badge]:
+  https://app.codacy.com/project/badge/Grade/a709a287b12249c3a4a57165f3306411
+[codacy]:
+  https://app.codacy.com/gh/jamielapointe/modern_cpp_template/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
 [github issues]: https://github.com/jamielapointe/modern_cpp_template/issues
-[github pull requests]: https://github.com/jamielapointe/modern_cpp_template/pulls
+[github pull requests]:
+  https://github.com/jamielapointe/modern_cpp_template/pulls
 [github releases]: ps://github.com/jamielapointe/modern_cpp_template/releases
 [releases-badge]: https://img.shields.io/badge/myproject-v0.0.0-blue
 [gitter-badge]: https://badges.gitter.im/jl-modern-cpp-template/Lobby.svg
 [gitter]: https://gitter.im/jl-modern-cpp-template/Lobby
 [Google C++ styleguide]: https://google.github.io/styleguide/cppguide.html
-[C++ Core Guidelines]: https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
-[SEI CERT C++ Coding Standard]: https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=88046682
+[C++ Core Guidelines]:
+  https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
+[SEI CERT C++ Coding Standard]:
+  https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=88046682
 [CPM]: https://github.com/cpm-cmake/CPM.cmake
 [Google Test]: https://github.com/google/googletest
 [Google Benchmark]: https://github.com/google/benchmark
@@ -515,7 +520,30 @@ specification. Contributions of any kind welcome!
 [clang-tidy]: https://clang.llvm.org/extra/clang-tidy/
 [cppcheck]: https://cppcheck.sourceforge.io/
 [pre-commit]: https://pre-commit.com/
-[using a github template]: https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template
+[using a github template]:
+  https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template
+[choco]: https://chocolatey.org/install
+[brew]: https://brew.sh/
+[C++ Reference]: https://en.cppreference.com/w/cpp/compiler_support
+[Visual Studio 2022 or higher]: https://visualstudio.microsoft.com/
+[CMake 3.25+]: https://cmake.org/
+[CMake Download]: https://cmake.org/download/
+[Doxygen]: http://doxygen.nl/
+[Doxygen Download]: https://www.doxygen.nl/download.html
+[ccache]: https://ccache.dev
+[ccache download]: https://ccache.dev/download.html
+[include-what-you-use]: https://include-what-you-use.org/
+[install: include what you use]:
+  https://github.com/include-what-you-use/include-what-you-use#how-to-install
+[build_dir]:
+  https://user-images.githubusercontent.com/16418197/82524586-fa48e380-9af4-11ea-8514-4e18a063d8eb.jpg
+[visual_studio]:
+  https://user-images.githubusercontent.com/16418197/82781142-ae60ac00-9e1e-11ea-8c77-222b005a8f7e.png
+[generate]:
+  https://user-images.githubusercontent.com/16418197/82781591-c97feb80-9e1f-11ea-86c8-f2748b96f516.png
+[Docker]: https://www.docker.com/
+[Docker volumes docs]: https://docs.docker.com/storage/volumes/
+[all-contributors]: https://github.com/all-contributors/all-contributors
 
 <!-- [conan-badge]: https://img.shields.io/badge/conan-io-blue -->
 <!-- [conan-link]: https://conan.io/center/myproject -->

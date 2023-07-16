@@ -105,10 +105,24 @@ jobs:
 
       - name: Install Tools
         run: |
+          # Install LLVM/clang 16
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 16 all
+
+          # Install other tools
           sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+
+          # Get the latest version of doxygen
+          wget https://www.doxygen.nl/files/doxygen-1.9.7.linux.bin.tar.gz
+          mkdir -p ~/.local/bin
+          tar -xC ~/.local/bin -f doxygen-1.9.7.linux.bin.tar.gz
+          rm doxygen-1.9.7.linux.bin.tar.gz
+          echo 'export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH:' >> ~/.bashrc
+          export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH
+          doxygen -v
 
       - name: Setup Cache
         uses: ./.github/actions/setup_cache

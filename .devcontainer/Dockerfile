@@ -50,7 +50,7 @@ RUN wget https://www.doxygen.nl/files/doxygen-1.9.7.linux.bin.tar.gz \
   mkdir -p ~/.local/bin \
   tar -xC ~/.local/bin -f doxygen-1.9.7.linux.bin.tar.gz \
   rm doxygen-1.9.7.linux.bin.tar.gz \
-  echo 'export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH:' >> ~/.bashrc \
+  echo "export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH" >> ~/.bashrc \
   export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH \
   doxygen -v
 

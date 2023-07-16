@@ -5,7 +5,7 @@
 If there are any vulnerabilities in **myproject**, don't hesitate to _report
 them_.
 
-1. Use any of the [private contact addresses][].
+1. [Report a security vulnerability][].
 2. Describe the vulnerability.
 
    If you have a fix, that is most welcome -- please attach or summarize it in
@@ -21,5 +21,5 @@ them_.
 4. Once we have either a) published a fix, or b) declined to address the
    vulnerability for whatever reason, you are free to publicly disclose it.
 
-[private contact addresses]:
-  https://github.com/jamielapointe/modern_cpp_template#support
+[Report a security vulnerability]:
+  https://github.com/jamielapointe/modern_cpp_template/security/advisories

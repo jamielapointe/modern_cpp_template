@@ -21,7 +21,7 @@ RUN apt-get install --yes --quiet --no-install-recommends \
   make=4.3-4.1build1 \
   ninja-build=1.10.1-1 \
   git=1:2.34.1-1ubuntu1.9 \
-  python3=3.10.6-1~22.04 \
+  python3=3.10.6-1${HOME}22.04 \
   python3-pip=22.0.2+dfsg-1ubuntu0.3 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
@@ -47,11 +47,11 @@ ENV CONAN_SYSREQUIRES_MODE enabled
 
 # Install doxygen
 RUN wget https://www.doxygen.nl/files/doxygen-1.9.7.linux.bin.tar.gz \
-  mkdir -p ~/.local/bin \
-  tar -xC ~/.local/bin -f doxygen-1.9.7.linux.bin.tar.gz \
+  mkdir -p "${HOME}/.local/bin" \
+  tar -xC "${HOME}/.local/bin" -f doxygen-1.9.7.linux.bin.tar.gz \
   rm doxygen-1.9.7.linux.bin.tar.gz \
-  echo "export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH" >> ~/.bashrc \
-  export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH \
+  echo "export PATH=${HOME}/.local/bin/doxygen-1.9.7/bin:$PATH" >> "${HOME}/.bashrc" \
+  export PATH="${HOME}/.local/bin/doxygen-1.9.7/bin":"${PATH}" \
   doxygen -v
 
 # User-settable versions:

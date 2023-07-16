@@ -490,9 +490,9 @@ any kind welcome!
   https://codecov.io/gh/jamielapointe/modern_cpp_template/branch/main/graph/badge.svg?token=6REP7VM7DP
 [codecov]: https://codecov.io/gh/jamielapointe/modern_cpp_template
 [codeql-badge]:
-  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql-analysis.yml/badge.svg
+  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql_analysis.yml/badge.svg
 [codeql]:
-  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql-analysis.yml
+  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql_analysis.yml
 [codacy-badge]:
   https://app.codacy.com/project/badge/Grade/a709a287b12249c3a4a57165f3306411
 [codacy]:

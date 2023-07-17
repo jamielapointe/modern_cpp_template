@@ -22,20 +22,14 @@ modern C++ quickly.
   - [Getting Started](#getting-started)
     - [Use the Github template](#use-the-github-template)
   - [Dependencies](#dependencies)
-    - [Too Long, Didn't Install](#too-long-didnt-install)
-      - [Docker](#docker)
+    - [Docker](#docker)
       - [Necessary Dependencies](#necessary-dependencies)
       - [Optional Dependencies](#optional-dependencies)
         - [C++ Tools](#c-tools)
   - [Build Instructions](#build-instructions)
-    - [(1) Specify the compiler using environment variables](#1-specify-the-compiler-using-environment-variables)
+    - [Specify the compiler using environment variables](#specify-the-compiler-using-environment-variables)
       - [Commands for setting the compilers](#commands-for-setting-the-compilers)
-    - [(2) Configure your build](#2-configure-your-build)
-      - [(2.a) Configuring via cmake](#2a-configuring-via-cmake)
-      - [(2.b) Configuring via ccmake](#2b-configuring-via-ccmake)
-      - [(2.c) Configuring via cmake-gui](#2c-configuring-via-cmake-gui)
-        - [Windows - Visual Studio generator and Clang Compiler](#windows---visual-studio-generator-and-clang-compiler)
-      - [(3) Build the project](#3-build-the-project)
+    - [Configure your build](#configure-your-build)
       - [Running the tests](#running-the-tests)
   - [Docker Instructions](#docker-instructions)
   - [Contribute](#contribute)
@@ -80,7 +74,7 @@ This template:
 - Utilizes [fmt][] for formatted printing
 - Utilizes [spdlog][] for logging
 - Utilizes [GSL: Guidelines Support Library][] for helping to adhere to the
-- [C++ Core Guidelines][]
+  - [C++ Core Guidelines][]
 - Utilizes [Abseil][] helping to adhere to the [Google C++ styleguide][]
 - Utilizes [CLI11][] command line utility
 - Runs code coverage over the unit tests
@@ -105,16 +99,11 @@ setting up your project and committed the changes.
 
 Note about install commands:
 
-- for Windows, we use [choco][] or just download the installer and install.
-- for MacOS, we use [brew][].
 - In case of an error in cmake, make sure that the dependencies are on the PATH.
+- Currently the instructions are only for Debian/Ubuntu Linux; We hope to add
+  additional operating systems in the future.
 
-### Too Long, Didn't Install
-
-This is a really long list of dependencies, and it's easy to mess up. That's
-why:
-
-#### Docker
+### Docker
 
 We have a Docker image that's already set up for you. See the
 
@@ -132,38 +121,18 @@ We have a Docker image that's already set up for you. See the
      - Debian/Ubuntu:
 
        ```bash
-       sudo apt install build-essential
+       sudo apt-get install build-essential gcovr gcc-12 g++-12 gcc-12-doc
        ```
 
-     - Windows: N/A
-     - MacOS:
-
-       ```bash
-       brew install gcc
-       ```
-
-   - [clang 15+](https://clang.llvm.org/) Install command
+   - [clang 16+](https://clang.llvm.org/) Install command
 
      - Debian/Ubuntu:
 
        ```bash
-       bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+       wget https://apt.llvm.org/llvm.sh
+       chmod +x llvm.sh
+       sudo ./llvm.sh 16 all
        ```
-
-     - Windows:
-
-       Visual Studio 2022 ships with LLVM (see the Visual Studio section).
-
-     - MacOS:
-
-       ```bash
-       brew install llvm
-       ```
-
-   - [Visual Studio 2022 or higher][] Install command + Environment setup
-
-     On Windows, you need to install Visual Studio 2019 because of the SDK and
-     libraries that ship with it.
 
 2. [CMake 3.25+][] Install Command
 
@@ -173,55 +142,45 @@ We have a Docker image that's already set up for you. See the
      sudo apt-get install cmake
      ```
 
-   - Windows: Download latest version of CMake and install: [CMake Download][]
-   - MacOS:
-
-     ```bash
-     brew install cmake
-     ```
-
 #### Optional Dependencies
 
 ##### C++ Tools
 
-- [Doxygen][] Install Command
+- [ninja][] Install Command
 
+  - A small build system with a focus on speed
+
+  ```bash
+  sudo apt-get install ninja-build
+  ```
+
+- [Doxygen][] 1.9.7
+
+  - Generate API documentation from source code
   - Debian/Ubuntu:
 
     ```bash
-    sudo apt-get install doxygen
-    sudo apt-get install graphviz
+    sudo apt-get install graphviz texlive-latex-extra ghostscript
+    wget https://www.doxygen.nl/files/doxygen-1.9.7.linux.bin.tar.gz \
+      mkdir -p "${HOME}/.local" \
+      tar -xC "${HOME}/.local" -f doxygen-1.9.7.linux.bin.tar.gz \
+      rm doxygen-1.9.7.linux.bin.tar.gz \
+      echo "export PATH=\"${HOME}/.local/doxygen-1.9.7/bin:${PATH}\"" >> "${HOME}/.bashrc" \
+      export PATH="${HOME}/.local/doxygen-1.9.7/bin:${PATH}" \
     ```
 
-  - Windows: Download latest version of Doxygen and install:
+- [ccache][]
 
-    - [Doxygen Download][]
-
-  - MacOS:
-
-    ```bash
-    brew install doxygen
-    brew install graphviz
-    ```
-
-- [ccache][] Install Command
-
+  - Compiler cache
   - Debian/Ubuntu:
 
     ```bash
     sudo apt-get install ccache
     ```
 
-  - Windows: Download latest version of ccache and install: [ccache download][]
+- [cppcheck][]
 
-  - MacOS:
-
-    ```bash
-    brew install ccache
-    ```
-
-- [cppcheck][] Install Command
-
+  - C/C++ static analysis tool
   - Debian/Ubuntu:
 
     ```bash
@@ -230,15 +189,18 @@ We have a Docker image that's already set up for you. See the
 
   - Windows: Download latest version and install: [cppcheck][]
 
-  - MacOS:
+- [libpfm-4][]
 
-    ```bash
-    brew install cppcheck
-    ```
+  - a helper library to program the performance monitoring event
 
-- [include-what-you-use][] Install Command
+  ```bash
+  sudo apt-get install libpfm4
+  ```
 
-  Follow instructions here: [install: include what you use][]
+- [include-what-you-use][]
+
+  - Optimize usage of `#include` C & C++ instructions
+  - Follow instructions here: [install: include what you use][]
 
 ## Build Instructions
 
@@ -251,18 +213,19 @@ A full build has different steps:
 For the subsequent builds, in case you change the source code, you only need to
 repeat the last step.
 
-### (1) Specify the compiler using environment variables
+### Specify the compiler using environment variables
 
 By default (if you don't set environment variables `CC` and `CXX`), the system
-default compiler will be used.
+default compiler will be used. For Debian/Ubuntu this is usually the default
+version of GCC.
 
-CMake uses the environment variables CC and CXX to decide which compiler to use.
-So to avoid the conflict issues only specify the compilers using these
+CMake uses the environment variables `CC` and `CXX` to decide which compiler to
+use. So to avoid the conflict issues only specify the compilers using these
 variables.
 
 #### Commands for setting the compilers
 
-- Debian/Ubuntu/MacOS Set your desired compiler (`clang`, `gcc`, etc):
+- Debian/Ubuntu Set your desired compiler (`clang`, `gcc`, etc):
 
   - Temporarily (only for the current shell)
   - Run one of the following in the terminal:
@@ -273,7 +236,7 @@ variables.
     CC=clang CXX=clang++
     ```
 
-    - gcc
+    - gcc (usually the default; however, if not, then...)
 
     ```bash
     CC=gcc CXX=g++
@@ -295,94 +258,11 @@ variables.
 
   - Save and close the file
 
-### (2) Configure your build
+### Configure your build
 
-To configure the project, you could use `cmake`, or `ccmake` or `cmake-gui`.
-Each of them are explained in the following:
-
-#### (2.a) Configuring via cmake
-
-With Cmake directly:
-
-```bash
-cmake -S . -B ./build
-```
-
-Cmake will automatically create the `./build` folder if it does not exist, and
-it will configure the project.
-
-Instead, if you have CMake version 3.25+, you can use one of the configuration
-presets that are listed in the CmakePresets.json file.
-
-```bash
-cmake . --preset <configure-preset>
-cmake --build
-```
-
-#### (2.b) Configuring via ccmake
-
-With the Cmake Curses Dialog Command Line tool:
-
-```bash
-ccmake -S . -B ./build
-```
-
-Once `ccmake` has finished setting up, press 'c' to configure the project, press
-'g' to generate, and 'q' to quit.
-
-#### (2.c) Configuring via cmake-gui
-
-To use the GUI of the cmake:
-
-2.c.1) Open cmake-gui from the project directory:
-
-```bash
-cmake-gui .
-```
-
-2.c.2) Set the build directory:
-
-![build_dir][]
-
-2.c.3) Configure the generator:
-
-In cmake-gui, from the upper menu select `Tools/Configure`.
-
-**Warning**: if you have set `CC` and `CXX` always choose the
-`use default native compilers` option. This picks `CC` and `CXX`. Don't change
-the compiler at this stage!
-
-##### Windows - Visual Studio generator and Clang Compiler
-
-You should have already set `C` and `CXX` to `clang.exe` and `clang++.exe`.
-
-Choose "Visual Studio 17 2022" as the generator. To tell Visual studio to use
-`clang-cl.exe`:
-
-- If you use the LLVM that is shipped with Visual Studio: write `ClangCl` under
-  "optional toolset to use".
-
-![visual_studio][]
-
-2.c.4) Choose the Cmake options and then generate:
-
-![generate][]
-
-#### (3) Build the project
-
-Once you have selected all the options you would like to use, you can build the
-project (all targets):
-
-```bash
-cmake --build ./build
-```
-
-For Visual Studio, give the build configuration (Release, RelWithDeb, Debug,
-etc) like the following:
-
-```bash
-cmake --build ./build -- /p:configuration=Release
-```
+To configure the project, you could use `cmake`, or `ccmake` or `cmake-gui`. It
+is assumed the user knows how to build software. If not, then there are many
+great resource online.
 
 #### Running the tests
 
@@ -403,65 +283,6 @@ Dockerfile is inside the `.devcontainer` directory:
 docker build -f ./.devcontainer/Dockerfile --tag=my_project:latest .
 docker run -it my_project:latest
 ```
-
-This command will put you in a `bash` session in a Ubuntu 22.04 Docker
-container, with all of the tools listed in the [Dependencies](#dependencies)
-section already installed. Additionally, you will have `g++-12` and `clang++-16`
-installed as the default versions of `g++` and `clang++`.
-
-If you want to build this container using some other versions of gcc and clang,
-you may do so with the `GCC_VER` and `LLVM_VER` arguments:
-
-```bash
-docker build --tag=myproject:latest --build-arg GCC_VER=12 --build-arg LLVM_VER=16 .
-```
-
-The CC and CXX environment variables are set to GCC version 12 by default. If
-you wish to use clang as your default CC and CXX environment variables, you may
-do so like this:
-
-```bash
-docker build --tag=my_project:latest --build-arg USE_CLANG=1 .
-```
-
-You will be logged in as root, so you will see the `#` symbol as your prompt.
-You will be in a directory that contains a copy of the `cpp_starter_project`;
-any changes you make to your local copy will not be updated in the Docker image
-until you rebuild it. If you need to mount your local copy directly in the
-Docker image, see [Docker volumes docs][]. TLDR:
-
-```bash
-docker run -it \
-  -v absolute_path_on_host_machine:absolute_path_in_guest_container \
-  my_project:latest
-```
-
-You can configure and build [as directed above](#build-instructions) using these
-commands:
-
-```bash
-/starter_project# mkdir build
-/starter_project# cmake -S . -B ./build
-/starter_project# cmake --build ./build
-```
-
-You can configure and build using `clang-16`, without rebuilding the container,
-with these commands:
-
-```bash
-/starter_project# mkdir build
-/starter_project# CC=clang CXX=clang++ cmake -S . -B ./build
-/starter_project# cmake --build ./build
-```
-
-The `ccmake` tool is also installed; you can substitute `ccmake` for `cmake` to
-configure the project interactively. All of the tools this project supports are
-installed in the Docker image; enabling them is as simple as flipping a switch
-using the `ccmake` interface. Be aware that some of the sanitizers conflict with
-each other, so be sure to run them separately.
-
-A script called `build_examples.sh` is provided to help you to build the example
-GUI projects in this container.
 
 ## Contribute
 
@@ -523,28 +344,17 @@ any kind welcome!
 [pre-commit]: https://pre-commit.com/
 [using a github template]:
   https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template
-[choco]: https://chocolatey.org/install
-[brew]: https://brew.sh/
 [C++ Reference]: https://en.cppreference.com/w/cpp/compiler_support
-[Visual Studio 2022 or higher]: https://visualstudio.microsoft.com/
 [CMake 3.25+]: https://cmake.org/
-[CMake Download]: https://cmake.org/download/
 [Doxygen]: http://doxygen.nl/
-[Doxygen Download]: https://www.doxygen.nl/download.html
 [ccache]: https://ccache.dev
-[ccache download]: https://ccache.dev/download.html
 [include-what-you-use]: https://include-what-you-use.org/
 [install: include what you use]:
   https://github.com/include-what-you-use/include-what-you-use#how-to-install
-[build_dir]:
-  https://user-images.githubusercontent.com/16418197/82524586-fa48e380-9af4-11ea-8514-4e18a063d8eb.jpg
-[visual_studio]:
-  https://user-images.githubusercontent.com/16418197/82781142-ae60ac00-9e1e-11ea-8c77-222b005a8f7e.png
-[generate]:
-  https://user-images.githubusercontent.com/16418197/82781591-c97feb80-9e1f-11ea-86c8-f2748b96f516.png
 [Docker]: https://www.docker.com/
-[Docker volumes docs]: https://docs.docker.com/storage/volumes/
 [all-contributors]: https://github.com/all-contributors/all-contributors
+[ninja]: https://ninja-build.org/
+[libpfm-4]: https://github.com/wcohen/libpfm4
 
 <!-- [conan-badge]: https://img.shields.io/badge/conan-io-blue -->
 <!-- [conan-link]: https://conan.io/center/myproject -->

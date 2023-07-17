@@ -16,6 +16,9 @@ permissions:
 
 env:
   TEMPLATES_PATH: ".github/template"
+  NEW_ORG: ""
+  NEW_PROJECT: ""
+  NEW_SAFE_PROJECT: ""
 
 jobs:
   TemplateCleanup:
@@ -49,3 +52,62 @@ jobs:
           compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
+
+      - name: Get organization and project name
+        run: |
+          echo "NEW_ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "NEW_PROJECT=${{ github.event.repository.name }}" >> $GITHUB_ENV
+
+      - uses: octokit/request-action@v2.x
+        id: get_repo_meta
+        with:
+          route: GET /repos/{owner}/{repo}
+          owner: ${{ env.NEW_ORG }}
+          repo: ${{ env.NEW_PROJECT }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use testing variables if still a template
+        if: fromJson(steps.get_repo_meta.outputs.data).is_template == true
+        run: |
+          # This name is unsafe because it is not a valid C++ identifier
+          echo "NEW_PROJECT=my-unsafe.project" >> $GITHUB_ENV
+
+      - name: Add safe replacement variable versions
+        run: |
+          # hyphens and dots in c++ identifiers are forbidden. Use underscores instead.
+          NEW_SAFE_PROJECT=$(echo ${{ env.NEW_PROJECT }} | sed "s/-/_/g" | sed "s/\./_/g" )
+          echo "NEW_SAFE_PROJECT=$NEW_SAFE_PROJECT" >> $GITHUB_ENV
+
+      # Rename all cpp_starter_project occurences to current repository and remove this workflow
+      - name: Insert new org and project
+        run: |
+          # rename the CMake project to match the github project
+          find src include test fuzz_test cmake -type f -exec sed -i "s/myproject/${{ env.NEW_SAFE_PROJECT }}/gi" .github/constants.env CMakeLists.txt Dependencies.cmake ProjectOptions.cmake .github/workflows/ci.yml .github/workflows/codeql-analysis.yml configured_files/config.hpp.in {} +
+
+          # fill in placeholders of readme and move it into place
+          sed -i "s/%%myorg%%/${{ env.NEW_ORG }}/g" ${{ env.TEMPLATES_PATH }}/README.md
+          sed -i "s/%%myproject%%/${{ env.NEW_PROJECT }}/g" ${{ env.TEMPLATES_PATH }}/README.md
+          sed -i "s|%%description%%|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" ${{ env.TEMPLATES_PATH }}/README.md
+          mv include/myproject include/${{ env.NEW_SAFE_PROJECT }}
+          cp ${{ env.TEMPLATES_PATH }}/README.md README.md
+
+      - name: Print diff after replacement
+        run: |
+          # Exclude the README as that is checked separately!
+          git diff ':!README.md'
+          # following should not have any diffs
+          diff ${{ env.TEMPLATES_PATH }}/README.md README.md
+
+      - name: Remove unwanted files
+        run: |
+          # No tests needed as this will fail if any file from the list is missing/misspelled
+          xargs rm -r < ${{ env.TEMPLATES_PATH }}/removal-list
+
+      - name: Clean up before commit and push
+        run: |
+          rm -r ${{ env.TEMPLATES_PATH }}
+
+          # Can we get that from a variable?
+          # Remove this workflow as it has fulfilled its purpose
+          rm .github/workflows/template-janitor.yml

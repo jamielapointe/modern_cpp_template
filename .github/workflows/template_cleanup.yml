@@ -94,7 +94,7 @@ jobs:
             .github/CONTRIBUTORS.md \
             .github/SECURITY.md \
             .github/workflows/ci.yml \
-            .github/workflows/codeql-analysis.yml \
+            .github/workflows/codeql_analysis.yml \
             docs/mainpage.md \
             {} +
 
@@ -102,6 +102,7 @@ jobs:
           sed -i "s/%%myorg%%/${{ env.NEW_ORG }}/g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s/%%myproject%%/${{ env.NEW_PROJECT }}/g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s|%%description%%|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" ${{ env.TEMPLATES_PATH }}/README.md
+          sed -i "s/<\!-- markdownlint-disable -->/ /g" ${{ env.TEMPLATES_PATH }}/README.md
           mv include/myproject include/${{ env.NEW_SAFE_PROJECT }}
           cp ${{ env.TEMPLATES_PATH }}/README.md README.md
 
@@ -115,7 +116,7 @@ jobs:
       - name: Remove unwanted files
         run: |
           # No tests needed as this will fail if any file from the list is missing/misspelled
-          xargs rm -r < ${{ env.TEMPLATES_PATH }}/removal-list
+          xargs rm -r < ${{ env.TEMPLATES_PATH }}/removal_list
 
       - name: Clean up before commit and push
         run: |
@@ -123,4 +124,4 @@ jobs:
 
           # Can we get that from a variable?
           # Remove this workflow as it has fulfilled its purpose
-          rm .github/workflows/template-janitor.yml
+          rm .github/workflows/template_cleanup.yml

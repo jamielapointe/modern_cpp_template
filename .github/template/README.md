@@ -8,12 +8,12 @@
 <!-- [![Latest GitHub release][releases-badge]][github releases] -->
 <!-- [![Gitter chat][gitter-badge]][gitter] -->
 <!-- [![Conan.io][conan-badge]][conan-link] -->
-
+<!-- markdownlint-disable -->
 ## Table of Contents
 
-- [%%myproject%%](#myproject)
+- [%%myproject%%](#%%myproject%%)
   - [Table of Contents](#table-of-contents)
-  - [About %%myproject%%](#about-myproject)
+  - [About %%myproject%%](#about-%%myproject%%)
   - [Technologies Used](#technologies-used)
   - [Dependencies](#dependencies)
     - [Docker](#docker)
@@ -348,7 +348,7 @@ docker run -it my_project:latest
 
 <!-- Create conan package manager and add these badges to our project -->
 <!-- [conan-badge]: https://img.shields.io/badge/conan-io-blue -->
-<!-- [conan-link]: https://conan.io/center/myproject -->
+<!-- [conan-link]: https://conan.io/center/%%myproject%% -->
 
 <!-- If you have a glitter lobby, then add the proper links to your project's -->
 <!-- lobby below -->
@@ -356,5 +356,5 @@ docker run -it my_project:latest
 <!-- [gitter]: https://gitter.im/jl-modern-cpp-template/Lobby -->
 
 <!-- Add a badge for the latest release of your software -->
-<!-- [releases-badge]: https://img.shields.io/badge/myproject-v0.0.0-blue -->
+<!-- [releases-badge]: https://img.shields.io/badge/%%myproject%%-v0.0.0-blue -->
 <!-- [github releases]: ps://github.com/%%myorg%%/%%myproject%%/releases -->

@@ -196,9 +196,8 @@ jobs:
         run: |
           git diff
 
-      - name:
-          Test simple configuration to make sure nothing broke (default
-          compiler,cmake,developer_mode OFF)
+      # Ensure we did not break anything
+      - name: Ensure still builds
         run: |
           cmake -S . -B ./build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }}
 

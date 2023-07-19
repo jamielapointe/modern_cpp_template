@@ -105,8 +105,9 @@ jobs:
           sed -i "s/%%myproject%%/${{ env.NEW_PROJECT }}/g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s|%%description%%|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s/<\!-- markdownlint-disable -->/ /g" ${{ env.TEMPLATES_PATH }}/README.md
-          mv include/myproject include/${{ env.NEW_SAFE_PROJECT }}
           mv configured_files/myproject_config.h.in configured_files/${{ env.NEW_SAFE_PROJECT }}_config.h.in
+          mv include/myproject include/${{ env.NEW_SAFE_PROJECT }}
+          mv include/${{ env.NEW_SAFE_PROJECT }}/myproject_asserts.h include/${{ env.NEW_SAFE_PROJECT }}/${{ env.NEW_SAFE_PROJECT }}_asserts.h
           cp ${{ env.TEMPLATES_PATH }}/README.md README.md
 
       - name: Print diff after replacement

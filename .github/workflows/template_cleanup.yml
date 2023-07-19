@@ -17,6 +17,7 @@ permissions:
 
 env:
   TEMPLATES_PATH: ".github/template"
+  PROJECT_NAME: myproject
   NEW_ORG: ""
   NEW_PROJECT: ""
   NEW_SAFE_PROJECT: ""
@@ -127,6 +128,25 @@ jobs:
           # Remove this workflow as it has fulfilled its purpose
           rm .github/workflows/template_cleanup.yml
 
+      # Ensure we did not break anything
+      - name: Ensure still builds
+        run: |
+          cmake -S . -B ./build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }}
+          cmake --build build
+
+      - uses: EndBug/add-and-commit@v9
+        # only commit and push if we are not a template project anymore!
+        # prettier-ignore
+        if: fromJson(steps.get_repo_meta.outputs.data).is_template != true
+        with:
+          add: -A
+          author_name: Template Janitor
+          author_email: template.janitor@example.com
+          message: "Change Template Name"
+          pathspec_error_handling: exitImmediately
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   Template_Rename:
     name: Renames template when a new name is detected
     runs-on: ubuntu-latest
@@ -200,6 +220,7 @@ jobs:
       - name: Ensure still builds
         run: |
           cmake -S . -B ./build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }}
+          cmake --build build
 
       - uses: EndBug/add-and-commit@v9
         # only commit and push if we are a template and project name has changed

@@ -106,6 +106,7 @@ jobs:
           sed -i "s|%%description%%|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s/<\!-- markdownlint-disable -->/ /g" ${{ env.TEMPLATES_PATH }}/README.md
           mv include/myproject include/${{ env.NEW_SAFE_PROJECT }}
+          mv configured_files/myproject_config.h.in configured_files/${{ env.NEW_SAFE_PROJECT }}_config.h.in
           cp ${{ env.TEMPLATES_PATH }}/README.md README.md
 
       - name: Print diff after replacement

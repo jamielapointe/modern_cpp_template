@@ -1,7 +1,7 @@
 # Set default compiler warnings for a project
 # Parameters:
 #   TARGET_NAME [in] - the target name to set compiler warnings for
-function(myproject_set_project_warnings TARGET_NAME)
+function(modern_cpp_template_set_project_warnings TARGET_NAME)
   set(MSVC_WARNINGS
       /W4 # Baseline reasonable warnings
       /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data

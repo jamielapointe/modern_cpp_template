@@ -10,7 +10,7 @@ include(CheckCXXCompilerFlag)
 #                                that is suitable for the production
 #                                environment.
 #                                https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
-macro(myproject_enable_hardening TARGET_NAME UBSAN_MINIMAL_RUNTIME)
+macro(modern_cpp_template_enable_hardening TARGET_NAME UBSAN_MINIMAL_RUNTIME)
   message(STATUS "** Enabling Hardening (Target ${TARGET_NAME}) **")
 
   if(MSVC)

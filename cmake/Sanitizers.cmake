@@ -13,7 +13,7 @@
 #   ENABLE_SANITIZER_THREAD             [in] - Enable TSAN
 #   ENABLE_SANITIZER_MEMORY             [in] - Enable MSAN
 function(
-  myproject_enable_sanitizers
+  modern_cpp_template_enable_sanitizers
   TARGET_NAME
   ENABLE_SANITIZER_ADDRESS
   ENABLE_SANITIZER_LEAK

@@ -20,17 +20,17 @@ The list of contributors to the project:
             alt="jlapointe"
           /><br /><sub><b>jlapointe</b></sub></a
         ><br /><a
-          href="https://github.com/Jamie LaPointe/myproject/issues?q=author%3Ajlapointe"
+          href="https://github.com/Jamie LaPointe/modern_cpp_template/issues?q=author%3Ajlapointe"
           title="Bug reports"
           >🐛</a
         >
         <a
-          href="https://github.com/Jamie LaPointe/myproject/commits?author=jlapointe"
+          href="https://github.com/Jamie LaPointe/modern_cpp_template/commits?author=jlapointe"
           title="Code"
           >💻</a
         >
         <a
-          href="https://github.com/Jamie LaPointe/myproject/commits?author=jlapointe"
+          href="https://github.com/Jamie LaPointe/modern_cpp_template/commits?author=jlapointe"
           title="Documentation"
           >📖</a
         >

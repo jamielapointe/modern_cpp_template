@@ -22,7 +22,7 @@ on:
 
 env:
   VERBOSE: 1
-  PROJECT_NAME: myproject
+  PROJECT_NAME: modern_cpp_template
 
 jobs:
   analyze:

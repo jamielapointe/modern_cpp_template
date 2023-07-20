@@ -3,7 +3,7 @@
 # TODO(jlapointe) redo this with the package manager my projects intend to use
 #  Such as Conan
 
-function(myproject_package_project)
+function(modern_cpp_template_package_project)
   cmake_policy(SET CMP0103 NEW) # disallow multiple calls with the same NAME
 
   set(_options ARCH_INDEPENDENT # default to false

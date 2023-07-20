@@ -1,5 +1,5 @@
 # Enable interprocedural (i.e., link time) optimization (IPO/LTO)
-macro(myproject_enable_ipo)
+macro(modern_cpp_template_enable_ipo)
   include(CheckIPOSupported)
   check_ipo_supported(RESULT result OUTPUT output)
   if(result)

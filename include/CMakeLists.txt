@@ -1,1 +1,1 @@
-add_subdirectory(myproject)
+add_subdirectory(modern_cpp_template)

@@ -1,6 +1,6 @@
 # Contributing {#ContributingLink}
 
-Thanks for considering to write a Pull Request (PR) for myproject! Here are a
+Thanks for considering to write a Pull Request (PR) for modern_cpp_template! Here are a
 few guidelines to get you started:
 
 Make sure you are comfortable with the license; all contributions are licensed
@@ -16,7 +16,7 @@ Make sure any new functions you add are are:
 - Completely covered by tests
 
 In general, make sure the addition is well thought out and does not increase the
-complexity of myproject needlessly.
+complexity of modern_cpp_template needlessly.
 
 ## Things you should know
 

@@ -1,1 +1,1 @@
-target_sources(myproject_sample_app PUBLIC sample_app.cpp)
+target_sources(modern_cpp_template_sample_app PUBLIC sample_app.cpp)

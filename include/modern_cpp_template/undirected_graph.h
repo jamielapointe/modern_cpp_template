@@ -20,9 +20,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "myproject/macros.h"
+#include "modern_cpp_template/macros.h"
 
-namespace myproject::algorithms::undirected_graph {
+namespace modern_cpp_template::algorithms::undirected_graph {
 
 ///\brief Represent the Node of a graph
 ///\tparam NodeValue The type of the Value - must support operator<<
@@ -170,7 +170,8 @@ class UndirectedGraph {
   ///\param node_index The key of the Node whose Edge objects you want to return
   ///\return EdgeList&
   EdgeList const& get_edges(NodeIndex node_index) const {
-    myproject_assert(node_index >= 0 && node_index < adjacency_map().size());
+    modern_cpp_template_assert(node_index >= 0 &&
+                               node_index < adjacency_map().size());
     auto edge_iterator = adjacency_map().find(node_index);
     [[likely]] if (edge_iterator != adjacency_map().end()) {
       return edge_iterator->second;
@@ -184,8 +185,9 @@ class UndirectedGraph {
   ///\param node_index The key of the Node whose Edge objects you want to return
   ///\return EdgeList&
   EdgeList& get_edges(NodeIndex node_index) {
-    myproject_assert(node_index >= 0 &&
-                     static_cast<size_t>(node_index) < adjacency_map().size());
+    modern_cpp_template_assert(node_index >= 0 &&
+                               static_cast<size_t>(node_index) <
+                                   adjacency_map().size());
     auto edge_iterator = adjacency_map().find(node_index);
     [[likely]] if (edge_iterator != adjacency_map().end()) {
       return edge_iterator->second;
@@ -197,7 +199,8 @@ class UndirectedGraph {
   ///\param node_index The node index
   ///\return Node const&
   Node const& get_node(NodeIndex node_index) const {
-    myproject_assert(node_index >= 0 && node_index < node_map().size());
+    modern_cpp_template_assert(node_index >= 0 &&
+                               node_index < node_map().size());
     auto node_iterator = node_map().find(node_index);
     [[likely]] if (node_iterator != node_map().end()) {
       return node_iterator->second;
@@ -209,8 +212,8 @@ class UndirectedGraph {
   ///\param node_index The node index
   ///\return Node const&
   Node& get_node(NodeIndex node_index) {
-    myproject_assert(node_index >= 0 &&
-                     static_cast<size_t>(node_index) < node_map().size());
+    modern_cpp_template_assert(
+        node_index >= 0 && static_cast<size_t>(node_index) < node_map().size());
     auto node_iterator = node_map().find(node_index);
     [[likely]] if (node_iterator != node_map().end()) {
       return node_iterator->second;
@@ -313,4 +316,4 @@ class UndirectedGraph {
   EdgeList kEmptyEdgeList{};
 };
 
-}  // namespace myproject::algorithms::undirected_graph
+}  // namespace modern_cpp_template::algorithms::undirected_graph

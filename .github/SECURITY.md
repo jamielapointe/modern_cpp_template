@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If there are any vulnerabilities in **myproject**, then please do not hesitate
+If there are any vulnerabilities in **modern_cpp_template**, then please do not hesitate
 to _report them_.
 
 1. [Report a security vulnerability][].

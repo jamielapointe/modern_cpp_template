@@ -137,7 +137,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -Dmyproject_ENABLE_SANITIZER_ADDRESS:BOOL=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_LEAK:BOOL=${{matrix.sanitizers}} -Dmyproject_ENABLE_SANITIZER_UNDEFINED:BOOL=${{matrix.sanitizers}}
+          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -Dmodern_cpp_template_ENABLE_SANITIZER_ADDRESS:BOOL=${{matrix.sanitizers}} -Dmodern_cpp_template_ENABLE_SANITIZER_LEAK:BOOL=${{matrix.sanitizers}} -Dmodern_cpp_template_ENABLE_SANITIZER_UNDEFINED:BOOL=${{matrix.sanitizers}}
 
       - name: Build
         if: ${{contains(matrix.generator, 'Ninja')}}
@@ -156,27 +156,27 @@ jobs:
         working-directory: ./build
         run: |
           # sudo cpupower -c all frequency-set --governor performance
-          sudo perf stat ./myproject_benchmark
+          sudo perf stat ./modern_cpp_template_benchmark
 
       - name: Clang Test and coverage
         if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
         working-directory: ./build/test
         run: |
-          ./myproject_tests
-          llvm-profdata-16 merge -sparse default.profraw -o myproject_tests.profdata
-          llvm-cov-16 report ./myproject_tests -instr-profile=myproject_tests.profdata
-          llvm-cov-16 export ./myproject_tests -instr-profile=myproject_tests.profdata > coverage.json
-          llvm-cov-16 export ./myproject_tests -instr-profile=myproject_tests.profdata -format=lcov > coverage.lcov
-          llvm-cov-16 show ./myproject_tests -instr-profile=myproject_tests.profdata > coverage_show.txt
+          ./modern_cpp_template_tests
+          llvm-profdata-16 merge -sparse default.profraw -o modern_cpp_template_tests.profdata
+          llvm-cov-16 report ./modern_cpp_template_tests -instr-profile=modern_cpp_template_tests.profdata
+          llvm-cov-16 export ./modern_cpp_template_tests -instr-profile=modern_cpp_template_tests.profdata > coverage.json
+          llvm-cov-16 export ./modern_cpp_template_tests -instr-profile=modern_cpp_template_tests.profdata -format=lcov > coverage.lcov
+          llvm-cov-16 show ./modern_cpp_template_tests -instr-profile=modern_cpp_template_tests.profdata > coverage_show.txt
           # Note that for a detailed report run:
-          # llvm-cov-16 show ./myproject_tests -instr-profile=myproject_tests.profdata
+          # llvm-cov-16 show ./modern_cpp_template_tests -instr-profile=modern_cpp_template_tests.profdata
           # More info: https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
 
       - name: GCC Test and coverage
         if: ${{matrix.compiler == 'g++-12' && matrix.build_type == 'Debug'}}
         working-directory: ./build/test
         run: |
-          ./myproject_tests
+          ./modern_cpp_template_tests
           gcovr -j --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov-12'
 
       - name: Publish to codecov

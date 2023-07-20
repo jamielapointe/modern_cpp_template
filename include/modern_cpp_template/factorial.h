@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace myproject::algorithms {
+namespace modern_cpp_template::algorithms {
 
 ///\brief Compute the factorial of an integer
 /// Compute \f$a!\f$ where \f$a\f$ is an integer.  Note that \f$0!=1\f$.  In
@@ -29,4 +29,4 @@ namespace myproject::algorithms {
   return result;
 }
 
-}  // namespace myproject::algorithms
+}  // namespace modern_cpp_template::algorithms

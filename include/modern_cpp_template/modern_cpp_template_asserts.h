@@ -26,17 +26,23 @@
 
 namespace modern_cpp_template::internal {
 
+inline void print_error(char const* const expression, char const* const file,
+                        uint32_t line, char const* const function,
+                        char const* const message) {
+  // Print to stderr and abort, as specified in <cassert>.
+  spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
+                   file == nullptr ? "<file>" : file, line,
+                   function == nullptr ? "<function>" : function, expression,
+                   message == nullptr ? "" : message);
+}
+
 // Generic default assert handler.
 template <typename EnableIf = void, typename... EmptyArgs>
 struct assert_handler_impl {
   static inline void run(char const* const expression, char const* const file,
                          uint32_t line, char const* const function,
                          char const* const message) {
-    // Print to stderr and abort, as specified in <cassert>.
-    spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
-                     file == nullptr ? "<file>" : file, line,
-                     function == nullptr ? "<function>" : function, expression,
-                     message == nullptr ? "" : message);
+    print_error(expression, file, line, function, message);
     std::abort();
   }
 };
@@ -62,11 +68,7 @@ struct assert_handler_impl<
   static inline void run(char const* const expression, char const* const file,
                          uint32_t line, char const* const function,
                          char const* const message) {
-    // annoyingly duplicated
-    spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
-                     file == nullptr ? "<file>" : file, line,
-                     function == nullptr ? "<function>" : function, expression,
-                     message == nullptr ? "" : message);
+    print_error(expression, file, line, function, message);
     // GCC requires this call to be dependent on the template parameters.
     __assert_fail(expression, file, line, function,
                   std::declval<EmptyArgs>()...);

@@ -164,20 +164,23 @@ class UndirectedGraph {
   ///\return NodeMap const&
   [[gnu::nothrow]] NodeMap& node_map() { return node_map_; }
 
-  ///\brief Return the readonly list of Edge objects for a specific node
-  /// This will return the list of Edge objects that are directly connected to
-  /// the Node represented by the NodeIndex
-  ///\param node_index The key of the Node whose Edge objects you want to return
-  ///\return EdgeList&
-  EdgeList const& get_edges(NodeIndex node_index) const {
-    modern_cpp_template_assert(node_index >= 0 &&
-                               node_index < adjacency_map().size());
-    auto edge_iterator = adjacency_map().find(node_index);
-    [[likely]] if (edge_iterator != adjacency_map().end()) {
-      return edge_iterator->second;
-    }
-    return kEmptyEdgeList;
-  }
+  // ///\brief Return the readonly list of Edge objects for a specific node
+  // /// This will return the list of Edge objects that are directly connected
+  // to
+  // /// the Node represented by the NodeIndex
+  // ///\param node_index The key of the Node whose Edge objects you want to
+  // return
+  // ///\return EdgeList&
+  // EdgeList const& get_edges(NodeIndex node_index) const {
+  //   modern_cpp_template_assert(node_index >= 0 &&
+  //                              node_index < adjacency_map().size());
+  //   typename NodeAdjacencyMap::const_iterator edge_iterator =
+  //       adjacency_map().find(node_index);
+  //   [[likely]] if (edge_iterator != adjacency_map().end()) {
+  //     return edge_iterator->second;
+  //   }
+  //   return kEmptyEdgeList;
+  // }
 
   ///\brief Return the list of Edge objects for a specific node
   /// This will return the list of Edge objects that are directly connected to
@@ -188,25 +191,28 @@ class UndirectedGraph {
     modern_cpp_template_assert(node_index >= 0 &&
                                static_cast<size_t>(node_index) <
                                    adjacency_map().size());
-    auto edge_iterator = adjacency_map().find(node_index);
+    typename NodeAdjacencyMap::iterator edge_iterator =
+        adjacency_map().find(node_index);
     [[likely]] if (edge_iterator != adjacency_map().end()) {
       return edge_iterator->second;
     }
     return kEmptyEdgeList;
   }
 
-  ///\brief Return the readonly Node from the node index
-  ///\param node_index The node index
-  ///\return Node const&
-  Node const& get_node(NodeIndex node_index) const {
-    modern_cpp_template_assert(node_index >= 0 &&
-                               node_index < node_map().size());
-    auto node_iterator = node_map().find(node_index);
-    [[likely]] if (node_iterator != node_map().end()) {
-      return node_iterator->second;
-    }
-    return kEmptyNode;
-  }
+  // ///\brief Return the readonly Node from the node index
+  // ///\param node_index The node index
+  // ///\return Node const&
+  // Node const& get_node(NodeIndex node_index) const {
+  //   modern_cpp_template_assert(
+  //       node_index >= 0 && static_cast<size_t>(node_index) <
+  //       node_map().size());
+  //   typename NodeMap ::const_iterator node_iterator =
+  //   node_map().find(node_index);
+  //   [[likely]] if (node_iterator != node_map().end()) {
+  //     return node_iterator->second;
+  //   }
+  //   return kEmptyNode;
+  // }
 
   ///\brief Return the Node from the node index
   ///\param node_index The node index

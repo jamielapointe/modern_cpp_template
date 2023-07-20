@@ -1,7 +1,7 @@
 # Error check settings
 Checks: "cppcoreguidelines-*,cert-*,abseil-*,google-*,-cert-dcl58-cpp"
 WarningsAsErrors: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,cert-*,abseil-*,google-*"
-HeaderFilterRegex: "myproject.*h"
+HeaderFilterRegex: "modern_cpp_template.*h"
 AnalyzeTemporaryDtors: false
 FormatStyle: file
 CheckOptions:

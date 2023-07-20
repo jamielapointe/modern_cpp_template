@@ -1,4 +1,4 @@
-///\file myproject_asserts.h
+///\file modern_cpp_template_asserts.h
 ///\author Jamie LaPointe (jamie.lapointe@gmail.com)
 ///\brief Provide some project level asserts
 /// these asserts can be can be configured at compiled for certain behaviours
@@ -22,9 +22,19 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "myproject/system_constants.h"
+#include "modern_cpp_template/system_constants.h"
 
-namespace myproject::internal {
+namespace modern_cpp_template::internal {
+
+inline void print_error(char const* const expression, char const* const file,
+                        uint32_t line, char const* const function,
+                        char const* const message) {
+  // Print to stderr and abort, as specified in <cassert>.
+  spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
+                   file == nullptr ? "<file>" : file, line,
+                   function == nullptr ? "<function>" : function, expression,
+                   message == nullptr ? "" : message);
+}
 
 // Generic default assert handler.
 template <typename EnableIf = void, typename... EmptyArgs>
@@ -32,11 +42,7 @@ struct assert_handler_impl {
   static inline void run(char const* const expression, char const* const file,
                          uint32_t line, char const* const function,
                          char const* const message) {
-    // Print to stderr and abort, as specified in <cassert>.
-    spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
-                     file == nullptr ? "<file>" : file, line,
-                     function == nullptr ? "<function>" : function, expression,
-                     message == nullptr ? "" : message);
+    print_error(expression, file, line, function, message);
     std::abort();
   }
 };
@@ -62,11 +68,7 @@ struct assert_handler_impl<
   static inline void run(char const* const expression, char const* const file,
                          uint32_t line, char const* const function,
                          char const* const message) {
-    // annoyingly duplicated
-    spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
-                     file == nullptr ? "<file>" : file, line,
-                     function == nullptr ? "<function>" : function, expression,
-                     message == nullptr ? "" : message);
+    print_error(expression, file, line, function, message);
     // GCC requires this call to be dependent on the template parameters.
     __assert_fail(expression, file, line, function,
                   std::declval<EmptyArgs>()...);
@@ -96,9 +98,9 @@ inline void _internal_assert_handler(char const* const expression,
                                      char const* const file, uint32_t line,
                                      char const* const function,
                                      char const* const message) {
-  if constexpr (myproject::options::kEnableInternalDebugging) {
+  if constexpr (modern_cpp_template::options::kEnableInternalDebugging) {
     _assert_handler(expression, file, line, function, message);
   }
 }
 
-}  // namespace myproject::internal
+}  // namespace modern_cpp_template::internal

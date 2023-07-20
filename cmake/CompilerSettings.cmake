@@ -56,7 +56,7 @@ run_vcvarsall()
 #     https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
 # Parameters:
 #   TARGET_NAME [in] - The name of the target to enable code coverage for
-function(myproject_enable_coverage TARGET_NAME)
+function(modern_cpp_template_enable_coverage TARGET_NAME)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(${TARGET_NAME} INTERFACE --coverage -O0 -g)
     target_link_libraries(${TARGET_NAME} INTERFACE --coverage)
@@ -74,7 +74,7 @@ endfunction()
 
 # Enable autovectorization - this is a bit platform dependent; but usually it requires -O3 and -ffast-math compiler options
 # CMAKE_BUILD_TYPE "Release" enables -O3 by default.
-function(myproject_enable_autovectorization TARGET_NAME)
+function(modern_cpp_template_enable_autovectorization TARGET_NAME)
   if(NOT
      CMAKE_BUILD_TYPE
      STREQUAL
@@ -85,7 +85,7 @@ function(myproject_enable_autovectorization TARGET_NAME)
   # currently only supporting this for GCC and LLVM/Clang
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     target_compile_options(${TARGET_NAME} PRIVATE -ffast-math)
-    if(myproject_ENABLE_NATIVE_ARCHITECTURE)
+    if(modern_cpp_template_ENABLE_NATIVE_ARCHITECTURE)
       target_compile_options(${TARGET_NAME} PRIVATE -march=native)
     endif()
   endif()

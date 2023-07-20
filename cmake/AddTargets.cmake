@@ -5,7 +5,7 @@ include(CompilerSettings)
 #   TARGET_NAME [in]     - name of the target to add to the lists
 #   TARGET_LIST [in/out] - The specific target list to add the target to in
 #                          addition to the "all" target lists
-function(myproject_add_target_to_list TARGET_NAME TARGET_LIST)
+function(modern_cpp_template_add_target_to_list TARGET_NAME TARGET_LIST)
   set(LOCAL TARGET_LIST ${${TARGET_LIST}})
   get_target_property(TARGET_TYPE ${TARGET_NAME} TYPE)
 
@@ -48,53 +48,53 @@ endfunction()
 
 # Add common includes to all targets
 # Parameters: <none>
-macro(myproject_add_common_includes)
+macro(modern_cpp_template_add_common_includes)
   foreach(TARGET_NAME IN LISTS ALL_TARGETS_LIST)
-    target_include_directories(${TARGET_NAME} PUBLIC ${MYPROJECT_ROOT}/include)
-    target_include_directories(${TARGET_NAME} PUBLIC ${MYPROJECT_BUILD_ROOT}/configured_files/include)
+    target_include_directories(${TARGET_NAME} PUBLIC ${modern_cpp_template_ROOT}/include)
+    target_include_directories(${TARGET_NAME} PUBLIC ${modern_cpp_template_BUILD_ROOT}/configured_files/include)
     #target_include_directories(${TARGET_NAME} SYSTEM PUBLIC ${gsl_SOURCE_DIR}/include)
   endforeach()
 endmacro()
 
-macro(myproject_add_compiler_optimizations)
-  if(CMAKE_BUILD_TYPE STREQUAL "Release" AND myproject_ENABLE_SIMD)
+macro(modern_cpp_template_add_compiler_optimizations)
+  if(CMAKE_BUILD_TYPE STREQUAL "Release" AND modern_cpp_template_ENABLE_SIMD)
     foreach(TARGET_NAME IN LISTS ALL_TARGETS_LIST)
-      myproject_enable_autovectorization(${TARGET_NAME})
+      modern_cpp_template_enable_autovectorization(${TARGET_NAME})
     endforeach()
   endif()
 endmacro()
 
 # Add all targets used in this project
 # Parameters: <none>
-macro(myproject_add_targets)
+macro(modern_cpp_template_add_targets)
   set(ALL_EXECUTABLE_TARGETS_LIST "")
   set(ALL_INSTALLABLE_TARGETS_LIST "")
   set(ALL_TARGETS_LIST "")
   set(PRIMARY_APP_LIST "")
   set(TEST_LIST "")
 
-  add_executable(myproject_sample_app)
-  add_executable(myproject::myproject_sample_app ALIAS myproject_sample_app)
-  myproject_add_target_to_list(myproject_sample_app PRIMARY_APP_LIST)
+  add_executable(modern_cpp_template_sample_app)
+  add_executable(modern_cpp_template::modern_cpp_template_sample_app ALIAS modern_cpp_template_sample_app)
+  modern_cpp_template_add_target_to_list(modern_cpp_template_sample_app PRIMARY_APP_LIST)
 
-  if(PROJECT_IS_TOP_LEVEL AND myproject_BUILD_FUZZ_TESTS)
-    add_executable(myproject_fuzz_tester)
-    add_executable(myproject::myproject_fuzz_tester ALIAS myproject_fuzz_tester)
-    myproject_add_target_to_list(myproject_fuzz_tester TEST_LIST)
+  if(PROJECT_IS_TOP_LEVEL AND modern_cpp_template_BUILD_FUZZ_TESTS)
+    add_executable(modern_cpp_template_fuzz_tester)
+    add_executable(modern_cpp_template::modern_cpp_template_fuzz_tester ALIAS modern_cpp_template_fuzz_tester)
+    modern_cpp_template_add_target_to_list(modern_cpp_template_fuzz_tester TEST_LIST)
   endif()
 
   if(PROJECT_IS_TOP_LEVEL AND BUILD_TESTING)
-    add_executable(myproject_benchmark)
-    add_executable(myproject::myproject_benchmark ALIAS myproject_benchmark)
-    myproject_add_target_to_list(myproject_benchmark TEST_LIST)
+    add_executable(modern_cpp_template_benchmark)
+    add_executable(modern_cpp_template::modern_cpp_template_benchmark ALIAS modern_cpp_template_benchmark)
+    modern_cpp_template_add_target_to_list(modern_cpp_template_benchmark TEST_LIST)
   endif()
 
-  myproject_add_common_includes()
-  myproject_add_compiler_optimizations()
+  modern_cpp_template_add_common_includes()
+  modern_cpp_template_add_compiler_optimizations()
 endmacro()
 
 # Postprocess all targets (e.g., link, install, etc.)
-macro(myproject_postprocess_targets)
+macro(modern_cpp_template_postprocess_targets)
 
   foreach(TARGET_NAME IN LISTS ALL_TARGETS_LIST)
     target_link_system_libraries(${TARGET_NAME} PRIVATE fmt::fmt)
@@ -102,11 +102,11 @@ macro(myproject_postprocess_targets)
     target_link_system_libraries(${TARGET_NAME} PRIVATE Microsoft.GSL::GSL)
     target_link_system_libraries(${TARGET_NAME} PRIVATE absl::base)
     target_link_system_libraries(${TARGET_NAME} PRIVATE absl::hash)
-    target_link_libraries(${TARGET_NAME} PRIVATE myproject::myproject_options)
-    target_link_libraries(${TARGET_NAME} PRIVATE myproject::myproject_warnings)
+    target_link_libraries(${TARGET_NAME} PRIVATE modern_cpp_template::modern_cpp_template_options)
+    target_link_libraries(${TARGET_NAME} PRIVATE modern_cpp_template::modern_cpp_template_warnings)
   endforeach()
 
-  target_link_system_libraries(myproject_sample_app PRIVATE CLI11::CLI11)
+  target_link_system_libraries(modern_cpp_template_sample_app PRIVATE CLI11::CLI11)
 
   # Don't go any further if we're not top level
   if(NOT PROJECT_IS_TOP_LEVEL)

@@ -19,10 +19,10 @@
 #include <array>
 #include <cstdint>
 
-///\brief the myproject::algorithms namespace
-/// This is the namespace for all algorithms in the myproject library
+///\brief the modern_cpp_template::algorithms namespace
+/// This is the namespace for all algorithms in the modern_cpp_template library
 /// Many of which are just inline functions
-namespace myproject::algorithms {
+namespace modern_cpp_template::algorithms {
 
 ///\brief binary exponentiation
 /// Compute \f$x^n \mod m\f$
@@ -66,4 +66,4 @@ inline Mat matrix_exponentiation(Mat base, int64_t exponent) {
   return answer;
 }
 
-}  // namespace myproject::algorithms
+}  // namespace modern_cpp_template::algorithms

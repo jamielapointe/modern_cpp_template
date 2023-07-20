@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "myproject/binary_exponentiation.h"
+#include "modern_cpp_template/binary_exponentiation.h"
 
-using myproject::algorithms::binary_exponentiation;
+using modern_cpp_template::algorithms::binary_exponentiation;
 
 TEST(BinaryExponentiation, TestLargeExponentsModuloNumber00) {
   ASSERT_EQ(binary_exponentiation(2, -5, 3), 1);

@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
 #include "gtest/gtest.h"
-#include "myproject/fibonacci.h"
-#include "myproject_config.h"
+#include "modern_cpp_template/fibonacci.h"
+#include "modern_cpp_template_config.h"
 
-using myproject::algorithms::fibonacci;
-using myproject::algorithms::fibonacci_fast1;
-using myproject::algorithms::fibonacci_fast2;
+using modern_cpp_template::algorithms::fibonacci;
+using modern_cpp_template::algorithms::fibonacci_fast1;
+using modern_cpp_template::algorithms::fibonacci_fast2;
 
 TEST(FibonacciTest, FibonacciTest00) {
   ASSERT_EQ(fibonacci(-500), -500);

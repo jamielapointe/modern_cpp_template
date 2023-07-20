@@ -20,19 +20,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set the project name and language
 project(
-  myproject
+  modern_cpp_template
   VERSION 0.0.1
   DESCRIPTION ""
   HOMEPAGE_URL "%%myurl%%"
   LANGUAGES CXX C)
 
-# Get the root directory of the myproject
-get_filename_component(MYPROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
-get_filename_component(MYPROJECT_BUILD_ROOT ${CMAKE_BINARY_DIR} ABSOLUTE)
-get_filename_component(MYPROJECT_INSTALL_ROOT ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
+# Get the root directory of the modern_cpp_template
+get_filename_component(modern_cpp_template_ROOT ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
+get_filename_component(modern_cpp_template_BUILD_ROOT ${CMAKE_BINARY_DIR} ABSOLUTE)
+get_filename_component(modern_cpp_template_INSTALL_ROOT ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
 
 # Append to the CMake Module path our custom cmake modules
-list(APPEND CMAKE_MODULE_PATH ${MYPROJECT_ROOT}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${modern_cpp_template_ROOT}/cmake)
 
 # Prevent the CMake Source and Build directories from being the same directory
 include(PreventInSourceBuilds)
@@ -46,23 +46,23 @@ include(AddTargets)
 #==============================================================================
 # Setup user configurable CMake project options
 #==============================================================================
-myproject_setup_options()
+modern_cpp_template_setup_options()
 
 #==============================================================================
 # Configure options that are enabled globally
 #==============================================================================
-myproject_global_options()
+modern_cpp_template_global_options()
 
 #==============================================================================
 # Configure 3rd party software
 #==============================================================================
 include(Dependencies)
-myproject_setup_dependencies()
+modern_cpp_template_setup_dependencies()
 
 #==============================================================================
 # Configure options that are enabled locally
 #==============================================================================
-myproject_local_options()
+modern_cpp_template_local_options()
 
 # don't know if this should be set globally from here or not...
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
@@ -77,13 +77,13 @@ string(
             GIT_SHORT_SHA)
 
 #==============================================================================
-# Set myproject targets used in this project.
+# Set modern_cpp_template targets used in this project.
 #
 # This step does NOT add any sources to the targets.  Sources are added in the
 # next step.  This includes executables, static & shared libraries, as well as
 # object libraries, etc.
 #==============================================================================
-myproject_add_targets()
+modern_cpp_template_add_targets()
 
 #==============================================================================
 # Add source directories
@@ -105,9 +105,9 @@ endif()
 add_subdirectory(benchmark)
 
 # Adding the fuzz tester
-if(TARGET myproject_fuzz_tester)
+if(TARGET modern_cpp_template_fuzz_tester)
   message(STATUS "Building Fuzz Tests, using fuzzing sanitizer https://www.llvm.org/docs/LibFuzzer.html")
-  if(NOT (myproject_ENABLE_SANITIZER_ADDRESS OR myproject_ENABLE_SANITIZER_UNDEFINED))
+  if(NOT (modern_cpp_template_ENABLE_SANITIZER_ADDRESS OR modern_cpp_template_ENABLE_SANITIZER_UNDEFINED))
     message(WARNING "You need asan or ubsan enabled for meaningful fuzz testing")
   endif()
   add_subdirectory(fuzz_test)
@@ -116,4 +116,4 @@ endif()
 #==============================================================================
 # Link, install, and post-process all targets
 #==============================================================================
-myproject_postprocess_targets()
+modern_cpp_template_postprocess_targets()

@@ -1,5 +1,5 @@
-#ifndef MYPROJECT_CONFIG_HPP
-#define MYPROJECT_CONFIG_HPP
+#ifndef modern_cpp_template_CONFIG_HPP
+#define modern_cpp_template_CONFIG_HPP
 
 #include <concepts>
 #include <string_view>
@@ -7,7 +7,7 @@
 // this is a basic example of how a CMake configured file might look
 // in this particular case, we are using it to set the version number of our
 // executable
-namespace myproject::options {
+namespace modern_cpp_template::options {
 
 // Convert CMake value types: OFF, ON
 // to: 0, 1 which C++ can easily handle
@@ -47,14 +47,14 @@ inline constexpr std::string_view kSystemVersion = "@SYSTEM_VERSION@";
 inline constexpr std::string_view kSystemProcessor = "@SYSTEM_PROCESSOR@";
 
 // Convert CMake Boolean options from PPD to constexpr bool
-inline constexpr bool kEnableInternalDebugging {convert_cmake_bool(@myproject_ENABLE_INTERNAL_DEBUGGING@)};
+inline constexpr bool kEnableInternalDebugging {convert_cmake_bool(@modern_cpp_template_ENABLE_INTERNAL_DEBUGGING@)};
 
-inline constexpr bool kEnableSanitizerAddress {convert_cmake_bool(@myproject_ENABLE_SANITIZER_ADDRESS@)};
-inline constexpr bool kEnableSanitizerLeak {convert_cmake_bool(@myproject_ENABLE_SANITIZER_LEAK@)};
-inline constexpr bool kEnableSanitizerUndefined {convert_cmake_bool(@myproject_ENABLE_SANITIZER_UNDEFINED@)};
-inline constexpr bool kEnableSanitizerThread {convert_cmake_bool(@myproject_ENABLE_SANITIZER_THREAD@)};
-inline constexpr bool kEnableSanitizerMemory {convert_cmake_bool(@myproject_ENABLE_SANITIZER_MEMORY@)};
-inline constexpr bool kEnableSanitizerHardening {convert_cmake_bool(@myproject_ENABLE_HARDENING@)};
+inline constexpr bool kEnableSanitizerAddress {convert_cmake_bool(@modern_cpp_template_ENABLE_SANITIZER_ADDRESS@)};
+inline constexpr bool kEnableSanitizerLeak {convert_cmake_bool(@modern_cpp_template_ENABLE_SANITIZER_LEAK@)};
+inline constexpr bool kEnableSanitizerUndefined {convert_cmake_bool(@modern_cpp_template_ENABLE_SANITIZER_UNDEFINED@)};
+inline constexpr bool kEnableSanitizerThread {convert_cmake_bool(@modern_cpp_template_ENABLE_SANITIZER_THREAD@)};
+inline constexpr bool kEnableSanitizerMemory {convert_cmake_bool(@modern_cpp_template_ENABLE_SANITIZER_MEMORY@)};
+inline constexpr bool kEnableSanitizerHardening {convert_cmake_bool(@modern_cpp_template_ENABLE_HARDENING@)};
 
 constexpr bool is_debug() {
   #if defined(NDEBUG)
@@ -66,6 +66,6 @@ constexpr bool is_debug() {
 
 // clang-format on
 
-}  // namespace myproject::options
+}  // namespace modern_cpp_template::options
 
 #endif

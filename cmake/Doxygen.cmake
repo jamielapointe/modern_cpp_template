@@ -1,7 +1,7 @@
 # Enable doxygen doc builds of source
 # Parameters:
 #   DOXYGEN_THEME [in] - Optional theme for Doxygen generation
-function(myproject_enable_doxygen DOXYGEN_THEME)
+function(modern_cpp_template_enable_doxygen DOXYGEN_THEME)
   # set better defaults for doxygen
   # is_verbose(_is_verbose)
   # if(NOT ${_is_verbose})
@@ -19,7 +19,7 @@ function(myproject_enable_doxygen DOXYGEN_THEME)
   # ONLY set this flag to true if you linked the clang library into doxygen.
   # This should be the same version of clang you are compiling your code with.
   # This is useful for getting better parsing of C++ code.
-  if(${myproject_ENABLE_DOXYGEN_WITH_CLANG})
+  if(${modern_cpp_template_ENABLE_DOXYGEN_WITH_CLANG})
     set(DOXYGEN_CLANG_ASSISTED_PARSING YES)
     set(DOXYGEN_CLANG_ADD_INC_PATHS NO)
     set(DOXYGEN_CLANG_OPTIONS "-w -Wno-error")

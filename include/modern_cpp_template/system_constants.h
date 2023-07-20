@@ -8,8 +8,8 @@
 ///
 #pragma once
 
-#include "myproject_config.h"
+#include "modern_cpp_template_config.h"
 #include "string_view"
 
-///\brief the myproject namespace
-namespace myproject {}  // namespace myproject
+///\brief the modern_cpp_template namespace
+namespace modern_cpp_template {}  // namespace modern_cpp_template

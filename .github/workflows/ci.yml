@@ -181,7 +181,7 @@ jobs:
 
       - name: Publish to codecov
         if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ runner.os }}
